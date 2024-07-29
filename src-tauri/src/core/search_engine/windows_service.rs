@@ -1,4 +1,3 @@
-use crate::core::search_engine::file_exists;
 use crate::core::search_engine::to_wide_string;
 
 use super::index_service::list_disks_and_volumes;
@@ -7,13 +6,9 @@ use super::WindowsDrives;
 use rayon::prelude::*;
 use std::ffi::OsString;
 use std::fs;
-use std::fs::DirEntry;
-use std::fs::ReadDir;
-use std::io;
 use std::mem;
 use std::os::windows::ffi::OsStringExt;
 use std::path::Path;
-use std::path::PathBuf;
 use std::ptr;
 use std::time::Instant;
 use winapi::shared::minwindef::DWORD;
