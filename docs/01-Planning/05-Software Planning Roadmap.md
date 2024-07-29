@@ -49,6 +49,7 @@ This document outlines the roadmap for the development of the NeoExplorer projec
      - Paste
    - Added Accessibility:
      - Keyboard Shortcuts
+     - Enhaced search bar
    - Implement Enhanced Feature:
      - Improved Search Functionality
      - Tabbed Browsing
@@ -58,6 +59,7 @@ This document outlines the roadmap for the development of the NeoExplorer projec
    - [ ] Add new language localization
    - [ ] Implement "Open with" functionality
    - [ ] Develop cut, copy, and paste operations
+   - [ ] Implement Breadcrumb navigation
    - [ ] Add support for keyboard shortcuts
    - [ ] Implement "Search Functionality"
    - [ ] Implement "Tabbed Browsing"

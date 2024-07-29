@@ -1,7 +1,0 @@
-[package]
-name = "neoexplorer"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-slint = "1.6.0"

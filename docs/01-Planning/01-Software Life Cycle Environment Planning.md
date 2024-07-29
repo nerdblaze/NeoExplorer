@@ -123,8 +123,8 @@ Requirements Analysis     <-->            User Acceptance Testing
     2. [Rust Analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
     3. [Rust Doc Viewer](https://marketplace.visualstudio.com/items?itemName=JScearcy.rust-doc-viewer)
     4. [Rust Test Explorer](https://marketplace.visualstudio.com/items?itemName=swellaby.vscode-rust-test-adapter)
-  - **Slint**:
-    1. [Slint](https://marketplace.visualstudio.com/items?itemName=Slint.slint)
+  - **Tauri**:
+    1. [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode)
   - **Documentation**:
     1. [Draw.io Integration](https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio)
     2. [Markdownlint](https://marketplace.visualstudio.com/items?itemName=DavidAnson.vscode-markdownlint)
@@ -148,7 +148,7 @@ Requirements Analysis     <-->            User Acceptance Testing
 
 #### Choice of Frontend Language
 
-- **Slint**: Chosen for its efficiency, ease of use, and ability to create responsive and modern UIs.
+- **Tauri**: Chosen for its efficiency, ease of use, and ability to create responsive and modern UIs.
 
 #### Choice of Backend Language
 
@@ -168,14 +168,20 @@ Requirements Analysis     <-->            User Acceptance Testing
 - To check installation , you can run this in your terminal of choice: `cargo --version`
 - For more information read the [guide](https://www.rust-lang.org/learn/get-started)
 
-#### Set up project
+#### Setting up Tauri
 
-- Open command  prompt and run `cargo new neoexplorer`
-- Go to your project folder `cd neoexplorer`
-
-#### Slint
-
-- Install slint crate `cargo add slint`
-- For more information read the [guide](https://releases.slint.dev/docs/slint/)
+- Download the [Microsoft C++ Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) installer and open it to begin installation.
+- During installation check the “Desktop development with C++” option.
+- WebView 2 is already installed on Windows 10 or else [download here](https://developer.microsoft.com/en-us/microsoft-edge/webview2/#download-section)
+- To install Tauri Run the following commands
+  - `cargo install create-tauri-app`
+  - `cargo create-tauri-app --beta`
+    - Project Name : NeoExplorer
+    - Package Name : neoexplorer
+    - Package Manager : npm
+    - Front End : SvelteKit (Javascript)
+  - `cd NeoExplorer`
+  - `npm install`
+  - `npm run tauri dev`
 
 ## Configuration Management Environment

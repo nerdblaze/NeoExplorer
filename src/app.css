@@ -1,0 +1,52 @@
+/* Write your global styles here, in PostCSS syntax */
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+:root {
+  --PrimaryBackground: #F5F5F5;
+  --SecondaryBackground: #FFFFFF;
+  --SurfaceBackground: #E0E0E0;
+
+  --PrimaryText: #333333;
+  --SecondaryText: #666666;
+  --HintText: #999999;
+
+  --AccentPrimary: #1976D2;
+  --AccentSecondary: #388E3C;
+  --AccentError: #D32F2F;
+  --AccentWarning: #FFA000;
+  --AccentInfo: #2785ff;
+  --AccentSuccess: #4CAF50;
+  --DividerLine: #BDBDBD;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --PrimaryBackground: #212121;
+    --SecondaryBackground: #121212; 
+    --SurfaceBackground: #444444;
+  
+    --PrimaryText: #DFDFDF;
+    --SecondaryText: #F2F2F2;
+    --HintText: #CCCCCC;
+    
+    --AccentPrimary: #1976D2;
+    --AccentSecondary: #388E3C;
+    --AccentError: #D32F2F;
+    --AccentWarning: #FFA000;
+    --AccentInfo: #2785ff;
+    --AccentSuccess: #4CAF50;
+    --DividerLine: #BDBDBD;
+  }
+}
+
+html,body{
+  background-color: var(--PrimaryBackground);
+  color: var(--PrimaryText);
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  min-height: 100vh;
+  word-spacing: 0.1em;
+}
