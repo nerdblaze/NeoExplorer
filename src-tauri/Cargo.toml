@@ -20,6 +20,8 @@ rusqlite = { version = "0.32.1", features = ["bundled", "unlock_notify"] }
 bincode = {version = "1.3.3", features = [] } 
 lazy_static = {version = "1.5.0", features = [] }
 walkdir = {version = "2.5.0", features = [] }
+sysinfo = {version = "0.31.2", features = [] }
+notify = { version = "6.1.1", features = [] }
 
 [build-dependencies]
 tauri-build = { version = "2.0.0-beta", features = [] }

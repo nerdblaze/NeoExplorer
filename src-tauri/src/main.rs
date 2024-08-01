@@ -49,8 +49,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod core;
-use core::search_engine::{index_service::{build_index, search_system}, windows_service::{list_drives,open_folder}};
-
+use core::search_engine::{index_service::{list_drives,open_folder, build_index}, database_service::search_system};
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
@@ -70,7 +69,7 @@ fn run_startup_tasks() {
 
 fn main() {
     tauri::Builder::default()
-        .setup(|app|{
+        .setup(|_app|{
             run_startup_tasks();
             Ok(())
         })

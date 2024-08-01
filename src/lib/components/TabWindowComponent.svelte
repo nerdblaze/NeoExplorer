@@ -152,7 +152,7 @@
   async function openSearchResult(item){
     
     if(item.file_attributes.directory){
-      $WindowTabs[tabIndex].currentPath = [...item.folder_path.split("\\")]
+      $WindowTabs[tabIndex].currentPath = [...item.file_path.split("\\")]
       reloadPage();
 
     }
@@ -243,7 +243,7 @@
       {#if $WindowTabs[tabIndex].currentPath.length === 0}
         <ul id="drive-list" class="flex flex-row p-2 flex-wrap">
           {#each drives as drive}
-            <DriveItem {drive} on:click={() => openItem(`${drive.drive_label}:`, true)} />
+            <DriveItem {drive} on:click={() => openItem(`${drive.disk_label}:`, true)} />
           {/each}
         </ul>
       {:else}
@@ -253,11 +253,9 @@
           {/if}
 
           {#each items as item}
-            <li class="file-item flex items-center p-2 cursor-pointer" on:dblclick={() => openItem(`${item.name}`, item.is_folder)}>
-              <i class="icon icon-{item.is_folder ? 'folder' : 'file'}"></i>
-              {item.name}
-            </li>
+            <ListViewItem {item} on:click={() => openItem(`${item.file_name}`, item.file_attributes.directory)}/>
           {/each}
+
         </ul>
       {/if}
     {/if}
