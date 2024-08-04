@@ -22,7 +22,7 @@ lazy_static = {version = "1.5.0", features = [] }
 sysinfo = {version = "0.31.2", features = [] }
 notify = { version = "6.1.1", features = [] }
 jwalk = { version = "0.8.1", features = [] }
-
+tokio = {version = "1.39.2", features = ["full"] }
 [build-dependencies]
 tauri-build = { version = "2.0.0-rc", features = [] }
 

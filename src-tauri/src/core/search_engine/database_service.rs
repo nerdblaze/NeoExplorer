@@ -82,26 +82,30 @@ pub fn search_system(
 
     let query = "SELECT file_name, file_path, file_size, file_modification_time, file_creation_time, file_access_time, file_attributes FROM master_file_table WHERE file_path LIKE ? and file_size > 0 LIMIT ? OFFSET ?";
 
-    let mut stmt = mem_conn.prepare(query).unwrap();
-
-    let rows = stmt
-        .query_map(
-            params![format!("%{}%", search_term), page_size, offset],
-            |row| {
-                Ok(FileEntry {
-                    file_name: row.get(0)?,
-                    file_path: row.get(1)?,
-                    file_size: row.get(2)?,
-                    file_modification_time: row.get(3)?,
-                    file_creation_time: row.get(4)?,
-                    file_access_time: row.get(5)?,
-                    file_attributes: FileAttributes::from_u32(row.get(6)?),
-                })
-            },
-        )
-        .unwrap();
-
-    let results: Vec<FileEntry> = rows.filter_map(Result::ok).collect();
+    let results: Vec<FileEntry> = match mem_conn.prepare(query) {
+        Ok(mut stmt) => {
+            let rows: Vec<FileEntry> = stmt
+                .query_map(
+                    params![format!("%{}%", search_term), page_size, offset],
+                    |row| {
+                        Ok(FileEntry {
+                            file_name: row.get(0)?,
+                            file_path: row.get(1)?,
+                            file_size: row.get(2)?,
+                            file_modification_time: row.get(3)?,
+                            file_creation_time: row.get(4)?,
+                            file_access_time: row.get(5)?,
+                            file_attributes: FileAttributes::from_u32(row.get(6)?),
+                        })
+                    },
+                )
+                .unwrap()
+                .filter_map(Result::ok)
+                .collect();
+            return rows;
+        }
+        Err(_) => Vec::new(),
+    };
 
     println!("Took time: {:.2?}", before.elapsed());
 

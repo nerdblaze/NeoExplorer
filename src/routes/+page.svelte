@@ -21,14 +21,14 @@
   }
 
   // Function to delete a tab by index
-  function deleteTab(index) {
+  const deleteTab = async (index) => {
     $WindowTabs = $WindowTabs.filter((tab, i) => i !== index);
     activeTab = activeTab >= $WindowTabs.length ? Math.max($WindowTabs.length - 1, 0) : activeTab;
     activateTab(activeTab);
   }
 
   // Function to activate a tab
-  function activateTab(index) {
+  const activateTab = async (index) => {
     $WindowTabs = $WindowTabs.map((tab, i) => ({
       ...tab,
       isActive: i === index,
@@ -37,11 +37,14 @@
   }
 
   // Function to handle keyboard events
-  const handle_keyboard = (event) => {
+  const handle_keyboard = async (event) => {
     if (event.ctrlKey){
       if(event.key === 'w') {
         event.preventDefault();
         deleteTab(activeTab);
+      } else if( event.key === 't') {
+        event.preventDefault();
+        addTab();
       }
     }
   };
@@ -74,8 +77,8 @@
   let windowPosition = {x:0, y:0, isLive: false};
 
   const startMove = async (event) => {
-    const titleBarHead = document.querySelector("#tab-head-container");
-    isWindowDragging = titleBarHead === event.target;
+    const titleBarMover = document.querySelector("#window-mover");
+    isWindowDragging = titleBarMover === event.target;
     
     const dragWindow = async (e) => {
       if (isWindowDragging) {
@@ -129,14 +132,14 @@
 <!-- svelte-ignore a11y-no-static-element-interactions -->
 <div id="user-area" class="flex flex-row grow">
   <div id="tab-container" class="flex flex-col w-full grow">
-    <div id="tab-head-container" class="flex flex-row justify-between w-full bg-secondarybackground cursor-move" on:mousedown={startMove}>
-      <ul id="tab-heads" class="flex flex-row px-2 h-8 text-sm/6">
+    <div id="tab-head-container" class="flex flex-row justify-between w-full bg-secondarybackground">
+      <ul id="tab-heads" class="flex flex-row px-2 h-8 text-sm/6 overflow-hidden">
         {#each $WindowTabs as tab, idx}
           <li
-            class="flex flex-row p-1 min-w-8 w-64 rounded-t-md text-left cursor-pointer {tab.isActive ? 'bg-primarybackground' : ''} justify-between"
+            class="flex flex-row p-1 max-w-64 w-64 rounded-t-md text-left cursor-pointer {tab.isActive ? 'bg-primarybackground' : ''} justify-between"
             on:click={() => activateTab(idx)}
           >
-            <span>{$WindowTabs[idx].currentPath.slice(-1)[0] || 'This PC'}</span>
+            <span class="overflow-hidden text-nowrap">{$WindowTabs[idx].currentPath.slice(-1)[0] || 'This PC'}</span>
             <span>
               <i class="icon icon-x text-2xs" on:click={() => deleteTab(idx)} role="button" aria-label="Close tab" tabindex=0></i>
             </span>
@@ -146,6 +149,7 @@
           <i class="icon icon-plus text-2xs"></i>
         </li>
       </ul>
+      <div id="window-mover" class="w-16 cursor-move grow" on:mousedown={startMove}></div>
       <ul id="window-button-container" class="flex flex-row px-2 h-8 text-sm text-center">
         <li class="flex relative p-1 min-w-8 cursor-pointer items-center justify-center" on:click={new_window}>
           <i class="absolute icon icon-window text-xs"></i>

@@ -3,7 +3,7 @@ use tauri::{
 };
 
 
-pub fn create_system_tray(app: &mut tauri::App) -> Result<(), tauri::Error>{
+pub fn create_system_tray(app: &tauri::AppHandle) -> Result<(), tauri::Error>{
     let exit = MenuItemBuilder::with_id("exit", "Exit").build(app)?;
     let menu = MenuBuilder::new(app).items(&[&exit]).build()?;
     let _tray = TrayIconBuilder::new()

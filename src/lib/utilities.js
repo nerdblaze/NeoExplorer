@@ -29,7 +29,7 @@ export function notify(msg, typ = 'info') {
       Notification.set({
         body: "",
         show: false,
-        type: "info" // Reset to default type
+        type: type
       });
     }, 1000);
   }

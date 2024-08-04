@@ -57,22 +57,28 @@ use core::search_engine::{
 };
 
 use system::tray::create_system_tray;
+use tauri::Manager;
 
 #[tauri::command]
-fn run_startup_tasks() {
-    build_index();
+async fn run_startup_tasks() {
     println!("Running startup tasks...");
+    build_index();
+    println!("App is ready");
 }
 
 /******************************************************************************
  * Main Function:
  ******************************************************************************/
-
-fn main() {
+ #[tokio::main]
+async fn main() {
     tauri::Builder::default()
         .setup(|app: &mut tauri::App| {
-            create_system_tray(app)?;
-            run_startup_tasks();
+            let app_handle = app.app_handle();
+            create_system_tray(&app_handle)?;
+            tauri::async_runtime::spawn(async move {
+                run_startup_tasks().await;                
+            });
+
             Ok(())
         })
         .plugin(tauri_plugin_shell::init())
