@@ -1,4 +1,5 @@
 <script>
+  import { getCurrentWindow } from "@tauri-apps/api/window";
   import TabWindowComponent from "$lib/components/TabWindowComponent.svelte";
   import { WindowTabs } from "$lib/records";
   import { onDestroy, onMount } from "svelte";
@@ -44,9 +45,34 @@
     }
   };
 
-  // Add keyboard event listener on mount
-  onMount(() => {
+  // Window Handling
+  // const pin_window = async (event) => {
+  //   appWindow.setAlwaysOnTop();
+  // };
+  const appWindow = getCurrentWindow();
+  let isWindowed = true;
+  const minimize_window = async (event) => {
+    appWindow.minimize();
+  };
+  
+  const maximize_window = async (event) => {
+    appWindow.toggleMaximize();
+    isWindowed = await appWindow.isMaximized();
+  };
+
+  const close_window = async (event) => {
+    appWindow.hide();
+  };
+
+  // Initial setup
+  onMount(async () => {
+
+    // Add keyboard event listener on mount
     document.addEventListener('keydown', handle_keyboard);
+
+    // Add initial tab on mount if no other tabs are present
+    if ($WindowTabs.length < 1) await addTab(); // skips during adding new tabs
+    activateTab(0);
   });
 
   // Remove keyboard event listener on destroy
@@ -54,10 +80,9 @@
     document.removeEventListener('keydown', handle_keyboard);
   });
 
-  // Initial setup
+
   onMount(async () => {
-    if ($WindowTabs.length < 1) await addTab(); // Add initial tab on mount
-    activateTab(0);
+
   });
 </script>
 
@@ -70,10 +95,10 @@
       <ul id="tab-heads" class="flex flex-row px-2 h-8 text-sm/6">
         {#each $WindowTabs as tab, idx}
           <li
-            class="p-1 min-w-8 w-24 rounded-t-md text-left cursor-pointer {tab.isActive ? 'bg-primarybackground' : ''} flex flex-row justify-between"
+            class="flex flex-row p-1 min-w-8 w-64 rounded-t-md text-left cursor-pointer {tab.isActive ? 'bg-primarybackground' : ''} justify-between"
             on:click={() => activateTab(idx)}
           >
-            <span>{$WindowTabs[activeTab].currentPath.slice(-1)[0] || 'This PC'}</span>
+            <span>{$WindowTabs[idx].currentPath.slice(-1)[0] || 'This PC'}</span>
             <span>
               <i class="icon icon-x text-2xs" on:click={() => deleteTab(idx)} role="button" aria-label="Close tab" tabindex=0></i>
             </span>
@@ -84,9 +109,9 @@
         </li>
       </ul>
       <ul id="window-button-container" class="flex flex-row px-2 h-8 text-sm text-center">
-        <li class="p-1 min-w-8 cursor-pointer"><i class="icon icon-minus text-xs"></i></li>
-        <li class="p-1 min-w-8 cursor-pointer"><i class="icon icon-square text-xs"></i></li>
-        <li class="p-1 min-w-8 cursor-pointer"><i class="icon icon-x text-xs"></i></li>
+        <li class="flex p-1 min-w-8 cursor-pointer items-center justify-center" on:click={minimize_window}><i class="icon icon-minus text-xs"></i></li>
+        <li class="flex p-1 min-w-8 cursor-pointer items-center justify-center" on:click={maximize_window}><i class="icon icon-{isWindowed?'expand':'compress'} text-xs"></i></li>
+        <li class="flex p-1 min-w-8 cursor-pointer items-center justify-center" on:click={close_window}><i class="icon icon-x text-xs"></i></li>
       </ul>
     </div>
     {#each $WindowTabs as tab, index}

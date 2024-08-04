@@ -10,26 +10,34 @@ This document outlines the roadmap for the development of the NeoExplorer projec
 
 **Goal**: Create a basic multi-lingual file browser with essential functionalities.
 
-1. **Features :**
-   - Multi-lingual support:
-     - English
-     - Bengali
-   - Modernize UI:
-     - Custom Skin
-     - Custom Icon
-     - Custom Theme
-   - Basic file operations:
-     - Open
-     - Properties
-     - Creation
-     - Deletion
-
-2. **Milestones :**
-   - [ ] Set up the project structure and initial repository
+1. **Milestones :**
+   - [x] Set up the project structure and initial repository
+   - [x] Develop the main UI for file browsing
+     - [x] Listing a file/folders
+     - [ ] Viewing Files
+       - [ ] List View
+       - [ ] Detail View
+       - [ ] Tile View
+     - [ ] Sorting Files
+     - [ ] Filter Files
    - [ ] Design and integrate customizable icons and themes
+     - [ ] Theme selector
+       - [ ] Basic Light Theme
+       - [ ] Basic Dark Theme
+       - [ ] Dynamic switching between themes
+     - [ ] Icon Selector
+       - [ ] Basic file/folder icons
+       - [ ] Icons based on extensions
    - [ ] Implement multi-lingual support with localization files
-   - [ ] Develop the main UI for file browsing
+     - [ ] Implement language manager
+     - [ ] Add Support for English language
+     - [ ] Add Support for Bengali language
+   - [ ] Add context menu
    - [ ] Implement basic file operations
+     - [ ] Open a File with default program set on windows
+     - [ ] Create a File/Folder
+     - [ ] Delete a File/Folder
+     - [ ] Show Properties
    - [ ] Conduct initial testing and debugging
    - [ ] Release version 1.0
 

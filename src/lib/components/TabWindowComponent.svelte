@@ -74,9 +74,16 @@
 
   // Mount component: load drives and set up event listeners
   onMount(async () => {
-    drives = await invoke("list_drives", {});
+    if($WindowTabs[tabIndex].currentPath.length == 0){
+      drives = await invoke("list_drives", {});
+      items = [];
+    } else {
+      reloadPage();
+    }
+    
     document.addEventListener("click", handleClickOutside);
     document.addEventListener("keydown", handleKeyboard);
+    console.log("Loaded");
   });
 
   // Clean up event listeners on component destroy

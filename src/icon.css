@@ -28,6 +28,7 @@
   line-height: 1;
   font-size: 1.5em;
 }
+
 .icon-exclamation:before{content:'\f12a';}
 .icon-ditto:before{content:'\0022';}
 .icon-hashtag:before{content:'\f292';}

@@ -8,7 +8,7 @@ use crate::core::search_engine::{FileAttributes, MEM_CONN};
 
 use super::FileEntry;
 use rayon::prelude::*;
-use rusqlite::{params, Connection, Result};
+use rusqlite::{params, Connection, Result, Statement};
 
 pub fn setup_database(conn: &Connection) -> Result<()> {
     conn.execute(
@@ -20,18 +20,19 @@ pub fn setup_database(conn: &Connection) -> Result<()> {
             file_creation_time INTEGER,
             file_access_time INTEGER,
             file_attributes INTEGER
-        )",
+        );",
         [],
     )?;
+
     Ok(())
 }
 
 pub fn insert_entries(conn: &Connection, entries: &[FileEntry]) -> Result<()> {
     let _ = conn.execute("DELETE FROM master_file_table", []);
-    let mut sql = String::from("INSERT INTO master_file_table (file_name, file_path, file_size, file_modification_time, file_creation_time, file_access_time, file_attributes) VALUES ");
+    let mut sql: String = String::from("INSERT INTO master_file_table (file_name, file_path, file_size, file_modification_time, file_creation_time, file_access_time, file_attributes) VALUES ");
     let placeholders: Vec<String> = entries
         .par_iter()
-        .map(|entry| {
+        .map(|entry: &FileEntry| {
             format!(
                 "('{}', '{}', {}, {}, {}, {}, {})",
                 entry.file_name,
@@ -47,7 +48,7 @@ pub fn insert_entries(conn: &Connection, entries: &[FileEntry]) -> Result<()> {
 
     sql.push_str(&placeholders.join(", "));
 
-    let mut stmt = conn.prepare(&sql)?;
+    let mut stmt: Statement = conn.prepare(&sql)?;
     let _ = stmt.execute([])?;
     Ok(())
 }

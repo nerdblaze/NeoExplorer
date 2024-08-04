@@ -12,7 +12,7 @@
 
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<li class="flex items-center p-4 bg-primarybackground hover:bg-secondarybackground transition-colors w-72 hover:cursor-pointer" on:click={open_drive}>
+<li class="flex items-center p-4 bg-primarybackground hover:bg-secondarybackground transition-colors w-72 hover:cursor-pointer" on:dblclick={open_drive}>
   <i class="icon icon-hard-drive text-2xl text-accentprimary mr-4"></i>
   <div class="flex-1">
     <div class="text-lg font-semibold text-primarytext">{drive.disk_name} ({drive.disk_label}):</div>

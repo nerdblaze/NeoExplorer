@@ -49,13 +49,14 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod core;
-use core::search_engine::{index_service::{list_drives,open_folder, build_index}, database_service::search_system};
+mod system;
 
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-#[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
-}
+use core::search_engine::{
+    database_service::search_system,
+    index_service::{build_index, list_drives, open_folder},
+};
+
+use system::tray::create_system_tray;
 
 #[tauri::command]
 fn run_startup_tasks() {
@@ -69,12 +70,17 @@ fn run_startup_tasks() {
 
 fn main() {
     tauri::Builder::default()
-        .setup(|_app|{
+        .setup(|app: &mut tauri::App| {
+            create_system_tray(app)?;
             run_startup_tasks();
             Ok(())
         })
         .plugin(tauri_plugin_shell::init())
-        .invoke_handler(tauri::generate_handler![greet,search_system,list_drives,open_folder])
+        .invoke_handler(tauri::generate_handler![
+            search_system,
+            list_drives,
+            open_folder
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
