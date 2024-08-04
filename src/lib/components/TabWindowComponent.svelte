@@ -60,9 +60,9 @@
 
   // Handle clicks outside breadcrumb or search input
   function handleClickOutside(event) {
-    const breadcrumbContainer = document.getElementById("breadcrumb-container");
-    const searchContainer = document.getElementById("tab-quickbar-search");
-    const inputBox = document.getElementById("search-input");
+    const breadcrumbContainer = document.querySelector("#breadcrumb-container");
+    const searchContainer = document.querySelector("#tab-quickbar-search");
+    const inputBox = document.querySelector("#search-input");
 
     if ((breadcrumbContainer) && !breadcrumbContainer.contains(event.target) && searchContainer.contains(event.target)) {
       breadcrumbsVisible = false;
@@ -83,7 +83,6 @@
     
     document.addEventListener("click", handleClickOutside);
     document.addEventListener("keydown", handleKeyboard);
-    console.log("Loaded");
   });
 
   // Clean up event listeners on component destroy
