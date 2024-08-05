@@ -1,7 +1,5 @@
 use std::{
-    fs,
-    io::{self, Write},
-    time::Instant,
+    fs, io::{self, Write}, path::Path, time::Instant
 };
 
 use crate::core::search_engine::{FileAttributes, MEM_CONN};
@@ -13,7 +11,6 @@ use rusqlite::{params, Connection, Result, Statement};
 pub fn setup_database(conn: &Connection) -> Result<()> {
     conn.execute(
         "CREATE TABLE IF NOT EXISTS master_file_table(
-            file_name TEXT,
             file_path TEXT,
             file_size INTEGER,
             file_modification_time INTEGER,
@@ -29,27 +26,31 @@ pub fn setup_database(conn: &Connection) -> Result<()> {
 
 pub fn insert_entries(conn: &Connection, entries: &[FileEntry]) -> Result<()> {
     let _ = conn.execute("DELETE FROM master_file_table", []);
-    let mut sql: String = String::from("INSERT INTO master_file_table (file_name, file_path, file_size, file_modification_time, file_creation_time, file_access_time, file_attributes) VALUES ");
-    let placeholders: Vec<String> = entries
-        .par_iter()
-        .map(|entry: &FileEntry| {
-            format!(
-                "('{}', '{}', {}, {}, {}, {}, {})",
-                entry.file_name,
-                entry.file_path,
-                entry.file_size,
-                entry.file_modification_time,
-                entry.file_creation_time,
-                entry.file_access_time,
-                entry.file_attributes.to_u32(),
-            )
-        })
-        .collect();
+    let chunk_size = 4096;
+    let mut row_count = 0;
+    for chunk in entries.chunks(chunk_size) {
+        let mut sql: String = String::from("INSERT INTO master_file_table (file_path, file_size, file_modification_time, file_creation_time, file_access_time, file_attributes) VALUES ");
+        let placeholders: Vec<String> = chunk
+            .par_iter()
+            .map(|entry: &FileEntry| {
+                format!(
+                    "('{}', {}, {}, {}, {}, {})",
+                    entry.file_path,
+                    entry.file_size,
+                    entry.file_modification_time,
+                    entry.file_creation_time,
+                    entry.file_access_time,
+                    entry.file_attributes.to_u32(),
+                )
+            })
+            .collect();
+        sql.push_str(&placeholders.join(", "));
+        let mut stmt: Statement = conn.prepare(&sql)?;
+        row_count = row_count + stmt.execute([])?;
+        
+    }
+    println!("Total DB Entries: {}", row_count);
 
-    sql.push_str(&placeholders.join(", "));
-
-    let mut stmt: Statement = conn.prepare(&sql)?;
-    let _ = stmt.execute([])?;
     Ok(())
 }
 
@@ -80,7 +81,7 @@ pub fn search_system(
     let page_size = page_size.unwrap_or(1000);
     let offset = (page - 1) * page_size;
 
-    let query = "SELECT file_name, file_path, file_size, file_modification_time, file_creation_time, file_access_time, file_attributes FROM master_file_table WHERE file_path LIKE ? and file_size > 0 LIMIT ? OFFSET ?";
+    let query = "SELECT file_path, file_size, file_modification_time, file_creation_time, file_access_time, file_attributes FROM master_file_table WHERE file_path LIKE ? and file_size > 0 LIMIT ? OFFSET ?";
 
     let results: Vec<FileEntry> = match mem_conn.prepare(query) {
         Ok(mut stmt) => {
@@ -88,26 +89,27 @@ pub fn search_system(
                 .query_map(
                     params![format!("%{}%", search_term), page_size, offset],
                     |row| {
+                        let file_path: String = row.get(0)?;
+                        let file_name = Path::new(&file_path).file_name().unwrap().to_string_lossy().into_owned();
                         Ok(FileEntry {
-                            file_name: row.get(0)?,
-                            file_path: row.get(1)?,
-                            file_size: row.get(2)?,
-                            file_modification_time: row.get(3)?,
-                            file_creation_time: row.get(4)?,
-                            file_access_time: row.get(5)?,
-                            file_attributes: FileAttributes::from_u32(row.get(6)?),
+                            file_name,
+                            file_path,
+                            file_size: row.get(1)?,
+                            file_modification_time: row.get(2)?,
+                            file_creation_time: row.get(3)?,
+                            file_access_time: row.get(4)?,
+                            file_attributes: FileAttributes::from_u32(row.get(5)?),
                         })
                     },
                 )
                 .unwrap()
                 .filter_map(Result::ok)
                 .collect();
+            println!("Took time: {:.2?}", before.elapsed());
             return rows;
         }
         Err(_) => Vec::new(),
     };
-
-    println!("Took time: {:.2?}", before.elapsed());
 
     results
 }
