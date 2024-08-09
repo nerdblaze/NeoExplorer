@@ -13,8 +13,12 @@
       ...$WindowTabs,
       {
         component: TabWindowComponent,
+        searchTerm: "",
         isActive: false, // Track if this tab is active
+        hasPreview: false,
         currentPath: [],
+        oldPath: [],
+        currentView: []
       },
     ];
     activateTab($WindowTabs.length - 1);

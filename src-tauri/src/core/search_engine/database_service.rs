@@ -1,5 +1,8 @@
 use std::{
-    fs, io::{self, Write}, path::Path, time::Instant
+    fs,
+    io::{self, Write},
+    path::Path,
+    time::Instant,
 };
 
 use crate::core::search_engine::{FileAttributes, MEM_CONN};
@@ -47,7 +50,6 @@ pub fn insert_entries(conn: &Connection, entries: &[FileEntry]) -> Result<()> {
         sql.push_str(&placeholders.join(", "));
         let mut stmt: Statement = conn.prepare(&sql)?;
         row_count = row_count + stmt.execute([])?;
-        
     }
     println!("Total DB Entries: {}", row_count);
 
@@ -71,16 +73,18 @@ pub fn retrieve_db(filename: &str) -> io::Result<Vec<FileEntry>> {
 #[tauri::command]
 pub fn search_system(
     search_term: &str,
-    page: Option<u32>,
-    page_size: Option<u32>,
+    page: Option<u64>,
+    page_size: Option<u64>,
 ) -> Vec<FileEntry> {
     let before = Instant::now();
+    if search_term.is_empty() {
+        return vec![];
+    }
     let mem_conn = MEM_CONN.lock().unwrap();
 
     let page = page.unwrap_or(1);
     let page_size = page_size.unwrap_or(1000);
     let offset = (page - 1) * page_size;
-
     let query = "SELECT file_path, file_size, file_modification_time, file_creation_time, file_access_time, file_attributes FROM master_file_table WHERE file_path LIKE ? and file_size > 0 LIMIT ? OFFSET ?";
 
     let results: Vec<FileEntry> = match mem_conn.prepare(query) {
@@ -90,7 +94,11 @@ pub fn search_system(
                     params![format!("%{}%", search_term), page_size, offset],
                     |row| {
                         let file_path: String = row.get(0)?;
-                        let file_name = Path::new(&file_path).file_name().unwrap().to_string_lossy().into_owned();
+                        let file_name = Path::new(&file_path)
+                            .file_name()
+                            .unwrap()
+                            .to_string_lossy()
+                            .into_owned();
                         Ok(FileEntry {
                             file_name,
                             file_path,
@@ -105,7 +113,7 @@ pub fn search_system(
                 .unwrap()
                 .filter_map(Result::ok)
                 .collect();
-            println!("Took time: {:.2?}", before.elapsed());
+            println!("Search time: {:.2?}", before.elapsed());
             return rows;
         }
         Err(_) => Vec::new(),

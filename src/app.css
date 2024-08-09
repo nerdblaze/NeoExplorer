@@ -4,40 +4,40 @@
 @import "tailwindcss/utilities";
 
 :root {
-  --PrimaryBackground: #F5F5F5;
-  --SecondaryBackground: #FFFFFF;
-  --SurfaceBackground: #E0E0E0;
+  --PrimaryBackground: #FFFFFF;
+  --SecondaryBackground: #F0F0F0;
+  --SurfaceBackground: #E8E8E8;
 
-  --PrimaryText: #333333;
-  --SecondaryText: #666666;
-  --HintText: #999999;
+  --PrimaryText: #1A1A1A;
+  --SecondaryText: #4A4A4A;
+  --HintText: #707070;
 
-  --AccentPrimary: #1976D2;
-  --AccentSecondary: #388E3C;
-  --AccentError: #D32F2F;
-  --AccentWarning: #FFA000;
-  --AccentInfo: #2785ff;
-  --AccentSuccess: #4CAF50;
-  --DividerLine: #BDBDBD;
+  --AccentPrimary: #5380FF;
+  --AccentSecondary: #40ABB6;
+  --AccentError: #ff5757;
+  --AccentWarning: #FB8C00;
+  --AccentInfo: #71bdff;
+  --AccentSuccess: #00ee7b;
+  --DividerLine: #B0B0B0;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --PrimaryBackground: #212121;
-    --SecondaryBackground: #121212; 
-    --SurfaceBackground: #444444;
-  
-    --PrimaryText: #DFDFDF;
-    --SecondaryText: #F2F2F2;
-    --HintText: #CCCCCC;
-    
-    --AccentPrimary: #1976D2;
-    --AccentSecondary: #388E3C;
-    --AccentError: #D32F2F;
-    --AccentWarning: #FFA000;
-    --AccentInfo: #2785ff;
-    --AccentSuccess: #4CAF50;
-    --DividerLine: #BDBDBD;
+    --PrimaryBackground: #1C1C1C;
+    --SecondaryBackground: #121212;
+    --SurfaceBackground: #2A2A2A;
+
+    --PrimaryText: #ECECEC;
+    --SecondaryText: #BFBFBF;
+    --HintText: #A5A5A5;
+
+    --AccentPrimary: #0B52B2;
+    --AccentSecondary: #055D76;
+    --AccentError: #cc0300;
+    --AccentWarning: #cc8000;
+    --AccentInfo: #168eff;
+    --AccentSuccess: #0a9158;
+    --DividerLine: #5E5E5E;
   }
 }
 
