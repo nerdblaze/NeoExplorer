@@ -1,6 +1,7 @@
 import { ContextMenuList, WindowTabs } from "./records";
 import { notify, get_active_tab, update_file_count } from "./utilities";
 import { invoke } from "@tauri-apps/api/core";
+import TabWindowComponent from "$lib/components/TabWindowComponent.svelte";
 
 // Function to hide the context menu
 export const hideContextMenu = async (event) => {
@@ -52,6 +53,11 @@ export const open_folder = async (folderPath) => {
   try {
     if (folderPath !== "") {
       const response = await invoke("open_folder", { folderPath });
+      if (response && folderPath.length == 2) {
+        response.map((item, idx) => {
+          item.file_path = folderPath[0] + ":\\" + item.file_name;
+        });
+      }
       update_file_count(response.length);
 
       WindowTabs.update((items) => {
@@ -76,11 +82,11 @@ export const open_folder = async (folderPath) => {
     notify(error, "Error");
   }
 };
+
 export const fetch_drives = async () => {
   let response = await invoke("list_drives", {});
   update_file_count(response.length);
   return response;
-
 };
 export const search_system = async (search_term) => {
   let search_results = [];
@@ -95,5 +101,39 @@ export const search_system = async (search_term) => {
       currentView: [...search_results],
     };
     return items;
+  });
+};
+
+export const new_window = async (folderPath) => {
+  const response = await invoke("create_new_window", { folderPath });
+};
+
+// Function to add a new tab
+export const new_tab = async (file_path) => {
+  WindowTabs.update((tabs) => {
+    return [
+      ...tabs,
+      {
+        component: TabWindowComponent,
+        isActive: false,
+        hasPreview: false,
+        searchTerm: "",
+        currentPath: [],
+        oldPath: [],
+        currentView: [],
+      },
+    ];
+  });
+  switch_tab(-1);
+  if (file_path) open_folder(file_path);
+};
+
+// Function to activate a tab
+export const switch_tab = async (index) => {
+  WindowTabs.update((items) => {
+    return items.map((tab, idx) => ({
+      ...tab,
+      isActive: idx == (index == -1 ? items.length - 1 : index),
+    }));
   });
 };

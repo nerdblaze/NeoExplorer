@@ -46,7 +46,9 @@ pub fn create_system_tray(app: &tauri::AppHandle) -> Result<(), tauri::Error> {
         .menu(&menu)
         .on_menu_event(move |app_handle, event| match event.id().as_ref() {
             "exit" => {
-                let _ = app_handle.get_webview_window("main").unwrap().close();
+                for webview_window in app_handle.webview_windows().values(){
+                    let _ = webview_window.close();
+                }
             }
             _ => (),
         })
@@ -58,17 +60,11 @@ pub fn create_system_tray(app: &tauri::AppHandle) -> Result<(), tauri::Error> {
             } = event
             {
                 let app_handle = tray.app_handle();
-                #[cfg(not(target_os = "macos"))]
-                {
-                    if let Some(webview_window) = app_handle.get_webview_window("main") {
+                {   
+                    for webview_window in app_handle.webview_windows().values(){
                         let _ = webview_window.show();
                         let _ = webview_window.set_focus();
                     }
-                }
-
-                #[cfg(target_os = "macos")]
-                {
-                    tauri::AppHandle::show(&app_handle.app_handle()).unwrap();
                 }
             }
         })

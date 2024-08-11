@@ -7,16 +7,20 @@
  *              window, etc.
  ******************************************************************************/
 
-pub mod tray;
-pub mod window;
+ 
+ pub mod tray;
+ pub mod window;
+ 
+ use std::sync::{Arc, Mutex};
 
 /******************************************************************************
- * Libraries:
- ******************************************************************************/
-
-// Standard Libraries
-
-// External Crates
+  * Libraries:
+  ******************************************************************************/
+  
+  // Standard Libraries
+  
+  // External Crates
+  use lazy_static::lazy_static;
 
 // Internal Modules
 
@@ -27,6 +31,10 @@ pub mod window;
 /******************************************************************************
  * Structures and Enums:
  ******************************************************************************/
+
+ lazy_static! {
+    static ref WINDOW_COUNTER: Arc<std::sync::Mutex<u32>> = Arc::new(Mutex::new(0));
+}
 
 /******************************************************************************
  * Implementations:
