@@ -11,9 +11,6 @@ tauri = { version = "2.0.0-rc", features = ["tray-icon", "image-png"] }
 tauri-plugin-shell = { version = "2.0.0-rc", features = [] }
 serde = { version = "1.0.204", features = ["derive"] }
 serde_json = { version = "1.0.122", features = [] }
-lru = { version = "0.12.4", features = [] }
-r2d2 = { version = "0.8.10", features = [] }
-r2d2_sqlite = { version = "0.25.0", features = ["bundled"] }
 winapi = { version = "0.3.9", features = ["winnt", "fileapi", "handleapi", "winioctl", "minwindef", "winbase", "ioapiset", "setupapi", "errhandlingapi", "winerror"] }
 rayon = {version = "1.10.0", features = [] }
 rusqlite = { version = "0.32.1", features = ["bundled", "unlock_notify"] }

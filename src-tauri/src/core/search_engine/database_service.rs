@@ -1,3 +1,17 @@
+/******************************************************************************
+ * Project Name: NeoExplorer
+ * Package Name: search_engine
+ * File Name: database_service.rs
+ * Author: B74Z3
+ * Description: This file provides functionality to perform database operations
+ *              related to searching, indexing etc.
+ ******************************************************************************/
+
+/******************************************************************************
+ * Libraries:
+ ******************************************************************************/
+
+// Standard Libraries
 use std::{
     fs,
     io::{self, Write},
@@ -5,12 +19,28 @@ use std::{
     time::Instant,
 };
 
-use crate::core::search_engine::{FileAttributes, MEM_CONN};
-
-use super::FileEntry;
-use rayon::prelude::*;
+// External Crates
+use rayon::iter::{IntoParallelRefIterator, ParallelIterator};
 use rusqlite::{params, Connection, Result, Statement};
 
+// Internal Modules
+use crate::core::{FileAttributes, FileEntry, MEM_CONN};
+
+/******************************************************************************
+ * Constants:
+ ******************************************************************************/
+
+/******************************************************************************
+ * Structures and Enums:
+ ******************************************************************************/
+
+/******************************************************************************
+ * Implementations:
+ ******************************************************************************/
+
+/******************************************************************************
+* Functions:
+******************************************************************************/
 pub fn setup_database(conn: &Connection) -> Result<()> {
     conn.execute(
         "CREATE TABLE IF NOT EXISTS master_file_table(

@@ -1,6 +1,6 @@
 /******************************************************************************
  * Project Name: NeoExplorer
- * Package Name: <_>
+ * Package Name: ROOT
  * File Name: main.rs
  * Author: B74Z3
  * Description: Entry Module for program
@@ -50,13 +50,15 @@
 
 mod core;
 mod system;
+mod utilities;
 
-use core::search_engine::{
+use crate::core::explorer_engine::explorer_service::open_folder;
+use crate::core::search_engine::{
     database_service::search_system,
-    index_service::{build_index, list_drives, open_folder},
+    index_service::{build_index, list_drives},
 };
+use crate::system::tray::create_system_tray;
 
-use system::tray::create_system_tray;
 use tauri::Manager;
 
 #[tauri::command]
@@ -69,14 +71,14 @@ async fn run_startup_tasks() {
 /******************************************************************************
  * Main Function:
  ******************************************************************************/
- #[tokio::main]
+#[tokio::main]
 async fn main() {
     tauri::Builder::default()
         .setup(|app: &mut tauri::App| {
             let app_handle = app.app_handle();
             create_system_tray(&app_handle)?;
             tauri::async_runtime::spawn(async move {
-                run_startup_tasks().await;                
+                run_startup_tasks().await;
             });
 
             Ok(())

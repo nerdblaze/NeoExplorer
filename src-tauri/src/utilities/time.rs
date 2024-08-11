@@ -1,20 +1,17 @@
 /******************************************************************************
  * Project Name: NeoExplorer
- * Package Name: system
- * File Name: mod.rs
+ * Package Name: utilities
+ * File Name: time.rs
  * Author: B74Z3
- * Description: This module handles system opeartions like system trays,
- *              window, etc.
+ * Description: This file handles time utility operations etc.
  ******************************************************************************/
-
-pub mod tray;
-pub mod window;
 
 /******************************************************************************
  * Libraries:
  ******************************************************************************/
 
 // Standard Libraries
+use std::time::{SystemTime, UNIX_EPOCH};
 
 // External Crates
 
@@ -22,7 +19,7 @@ pub mod window;
 
 /******************************************************************************
  * Constants:
-******************************************************************************/
+ ******************************************************************************/
 
 /******************************************************************************
  * Structures and Enums:
@@ -35,3 +32,10 @@ pub mod window;
 /******************************************************************************
  * Functions:
  ******************************************************************************/
+
+pub fn system_time_to_unix_time(system_time: SystemTime) -> u64 {
+    system_time
+        .duration_since(UNIX_EPOCH)
+        .unwrap_or_default()
+        .as_secs()
+}

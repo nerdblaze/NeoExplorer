@@ -1,57 +1,33 @@
 /******************************************************************************
  * Project Name: NeoExplorer
- * Package Name: <package_name>
- * File Name: <file_name>.rs
- * Author: <Author Name>
+ * Package Name: search_engine
+ * File Name: index_service.rs
+ * Author: B74Z3
  * Description: This file provides functionality to interact with file systems,
- *              including listing drives, opening folders, taking MFT snapshots,
- *              and building an index of file entries.
+ *              including listing drives, and building an index of file entries.
  ******************************************************************************/
 
 /******************************************************************************
- * Input Variables:
- *   - path: A string slice representing the path to a directory or file.
- *   - file_path: A string slice representing the path to a folder for opening.
- *   - filename: A string slice representing the path to the database file.
+ * Libraries:
  ******************************************************************************/
-
-/******************************************************************************
- * Output Variables:
- *   - Vec<FileEntry>: A vector of `FileEntry` objects representing the files
- *                     in a directory or MFT snapshot.
- *   - Result<Vec<FileEntry>, String>: A result containing either a vector of
- *                                     `FileEntry` objects or an error message.
- ******************************************************************************/
-
-/******************************************************************************
- * Libraries and Dependencies:
- *   - std: Standard library for Rust.
- *   - rayon: Provides parallel iterators for concurrent processing.
- *   - rusqlite: Provides SQLite database support.
- *   - sysinfo: Retrieves system information about disks and other resources.
- *   - walkdir: Provides directory traversal capabilities.
- ******************************************************************************/
-
-
 // Standard Libraries
-use std::fs::{self, Metadata};
+use std::fs::Metadata;
 use std::io;
 use std::os::windows::fs::MetadataExt;
 use std::path::Path;
 use std::time::Instant;
 
 // External Crates
-use rayon::prelude::*;
-use rusqlite::Result;
-use sysinfo::Disks;
 use jwalk::WalkDir;
+use rayon::iter::{IntoParallelRefIterator, ParallelBridge, ParallelIterator};
+use sysinfo::Disks;
 
 // Internal Modules
-use super::{system_time_to_unix_time, FileAttributes, FileEntry, WindowsDrives};
-use crate::core::search_engine::database_service::{
-    insert_entries, retrieve_db, setup_database, store_db,
+use crate::core::{
+    search_engine::database_service::{insert_entries, retrieve_db, setup_database, store_db},
+    FileAttributes, FileEntry, WindowsDrives, MEM_CONN,
 };
-use crate::core::search_engine::{file_exists, MEM_CONN};
+use crate::utilities::{file::file_exists, time::system_time_to_unix_time};
 
 /******************************************************************************
  * Constants:
@@ -63,22 +39,22 @@ const DB_FILENAME: &str = "target/index.db";
  * Structures and Enums:
  ******************************************************************************/
 
-// Assuming FileEntry and FileAttributes are defined elsewhere
-// You might have similar definitions somewhere else in the project
-
 /******************************************************************************
  * Implementations:
  ******************************************************************************/
 
+/******************************************************************************
+* Functions:
+******************************************************************************/
 /// Creates a `FileEntry` object from the given path and metadata.
 ///
 /// # Arguments
-/// 
+///
 /// * `path` - The path of the file or directory.
 /// * `metadata` - The metadata associated with the file or directory.
 ///
 /// # Returns
-/// 
+///
 /// Returns a result containing the `FileEntry` if successful, or an `io::Error` if
 /// there was a problem accessing the file.
 pub fn create_index(path: &Path, metadata: &Metadata) -> io::Result<FileEntry> {
@@ -106,14 +82,10 @@ pub fn create_index(path: &Path, metadata: &Metadata) -> io::Result<FileEntry> {
     })
 }
 
-/******************************************************************************
- * Functions:
- ******************************************************************************/
-
 /// Lists all drives on the system.
 ///
 /// # Returns
-/// 
+///
 /// Returns a vector of `WindowsDrives` representing each drive's label, name,
 /// total space, free space, file system, type, and whether it is removable.
 #[tauri::command]
@@ -145,57 +117,12 @@ pub fn list_drives() -> Vec<WindowsDrives> {
         .collect()
 }
 
-/// Opens a folder and retrieves file entries in parallel.
-///
-/// # Arguments
-/// 
-/// * `file_path` - The path to the folder to be opened.
-///
-/// # Returns
-/// 
-/// Returns a `Result` containing a vector of `FileEntry` objects if successful,
-/// or an error message if there was an issue reading the directory.
-#[tauri::command]
-pub fn open_folder(folder_path: &str) -> Result<Vec<FileEntry>, String> {
-    let before = Instant::now();
-
-    let path = Path::new(folder_path);
-
-    if path.exists() && path.is_dir() {
-        // Attempt to read the directory
-        let read_dir_result = fs::read_dir(path);
-
-        // Handle potential errors from fs::read_dir
-        let entries = match read_dir_result {
-            Ok(entries) => entries,
-            Err(e) => {
-                return Err(e.to_string());
-            }
-        };
-
-        // Process directory entries in parallel
-        let items: Vec<FileEntry> = entries
-            .par_bridge()
-            .filter_map(|entry| entry.ok())
-            .filter_map(|entry| {
-                let metadata = entry.metadata().unwrap();
-                create_index(&entry.path(), &metadata).ok()
-            })
-            .collect();
-        println!("Elapsed time: {:.2?}", before.elapsed());
-        Ok(items)
-    } else {
-        return Err(format!("Invalid path or not a directory: {}", folder_path));
-    }
-
-}
-
 /// Takes a snapshot of the MFT (Master File Table) for all drives.
 ///
 /// # Returns
-/// 
+///
 /// Returns a vector of `FileEntry` objects representing the files on all drives.
-fn take_mft_snapshot() -> Vec<FileEntry> {
+fn take_storage_snapshot() -> Vec<FileEntry> {
     let mut file_entries: Vec<FileEntry> = vec![];
 
     for drive in list_drives() {
@@ -204,21 +131,20 @@ fn take_mft_snapshot() -> Vec<FileEntry> {
         }
         let volume_path = format!("{}:\\", drive.disk_label);
         // Collect entries first
-        let new_entries:Vec<FileEntry> = WalkDir::new(&volume_path)
-        .into_iter()
-        .par_bridge()
-        .filter_map(|dir_entry_result| {
-            let dir_entry = dir_entry_result.ok()?;
-            let path = dir_entry.path();
-            if let Ok(metadata) = dir_entry.metadata() {
-                Some(create_index(&path, &metadata).ok())
-            } else {
-                None
-            }
-            
-        })
-        .filter_map(|entry| entry)
-        .collect();
+        let new_entries: Vec<FileEntry> = WalkDir::new(&volume_path)
+            .into_iter()
+            .par_bridge()
+            .filter_map(|dir_entry_result| {
+                let dir_entry = dir_entry_result.ok()?;
+                let path = dir_entry.path();
+                if let Ok(metadata) = dir_entry.metadata() {
+                    Some(create_index(&path, &metadata).ok())
+                } else {
+                    None
+                }
+            })
+            .filter_map(|entry| entry)
+            .collect();
 
         file_entries.extend(new_entries);
     }
@@ -229,7 +155,7 @@ fn take_mft_snapshot() -> Vec<FileEntry> {
 /// retrieving from an existing database.
 ///
 /// # Returns
-/// 
+///
 /// This function does not return a value but prints the total number of MFT entries
 /// and the elapsed time.
 pub fn build_index() {
@@ -239,7 +165,7 @@ pub fn build_index() {
     let master_file_table: Vec<FileEntry>;
 
     if !file_exists(filename) {
-        master_file_table = take_mft_snapshot();
+        master_file_table = take_storage_snapshot();
         let _ = store_db(&master_file_table, filename);
     } else {
         master_file_table = retrieve_db(filename).unwrap();
@@ -249,9 +175,8 @@ pub fn build_index() {
 
     let _ = setup_database(&mem_conn);
     let _ = insert_entries(&mem_conn, &master_file_table);
-    
+
     drop(mem_conn);
-    
 
     println!("Total MFT Entries retrieved: {}", master_file_table.len());
     println!("Elapsed time: {:.2?}", before.elapsed());
