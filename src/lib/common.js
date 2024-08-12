@@ -49,15 +49,11 @@ export const createContextMenu = async (event, callback, ...args) => {
 // Open a folder and handle potential errors
 export const open_folder = async (folderPath) => {
   const activeTab = get_active_tab();
-  const pathBuff = folderPath.split("\\");
+  const pathBuff = folderPath.split("\\").filter(Boolean);
   try {
     if (folderPath !== "") {
+      folderPath = pathBuff.join("\\")+"\\"
       const response = await invoke("open_folder", { folderPath });
-      if (response && folderPath.length == 2) {
-        response.map((item, idx) => {
-          item.file_path = folderPath[0] + ":\\" + item.file_name;
-        });
-      }
       update_file_count(response.length);
 
       WindowTabs.update((items) => {

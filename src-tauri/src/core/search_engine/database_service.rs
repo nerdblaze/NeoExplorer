@@ -13,10 +13,7 @@
 
 // Standard Libraries
 use std::{
-    fs,
-    io::{self, Write},
-    path::Path,
-    time::Instant,
+    ffi::OsStr, fs::{self}, io::{self, Write}, path::Path, time::Instant
 };
 
 // External Crates
@@ -126,7 +123,7 @@ pub fn search_system(
                         let file_path: String = row.get(0)?;
                         let file_name = Path::new(&file_path)
                             .file_name()
-                            .unwrap()
+                            .unwrap_or_else(|| OsStr::new(""))
                             .to_string_lossy()
                             .into_owned();
                         Ok(FileEntry {

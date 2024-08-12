@@ -46,17 +46,8 @@ const DB_FILENAME: &str = "target/index.db";
 /******************************************************************************
 * Functions:
 ******************************************************************************/
+
 /// Creates a `FileEntry` object from the given path and metadata.
-///
-/// # Arguments
-///
-/// * `path` - The path of the file or directory.
-/// * `metadata` - The metadata associated with the file or directory.
-///
-/// # Returns
-///
-/// Returns a result containing the `FileEntry` if successful, or an `io::Error` if
-/// there was a problem accessing the file.
 pub fn create_index(path: &Path, metadata: &Metadata) -> io::Result<FileEntry> {
     let file_name = path
         .file_name()
@@ -83,11 +74,6 @@ pub fn create_index(path: &Path, metadata: &Metadata) -> io::Result<FileEntry> {
 }
 
 /// Lists all drives on the system.
-///
-/// # Returns
-///
-/// Returns a vector of `WindowsDrives` representing each drive's label, name,
-/// total space, free space, file system, type, and whether it is removable.
 #[tauri::command]
 pub fn list_drives() -> Vec<WindowsDrives> {
     let disks = Disks::new_with_refreshed_list();
@@ -118,10 +104,6 @@ pub fn list_drives() -> Vec<WindowsDrives> {
 }
 
 /// Takes a snapshot of the MFT (Master File Table) for all drives.
-///
-/// # Returns
-///
-/// Returns a vector of `FileEntry` objects representing the files on all drives.
 fn take_storage_snapshot() -> Vec<FileEntry> {
     let mut file_entries: Vec<FileEntry> = vec![];
 
@@ -151,13 +133,7 @@ fn take_storage_snapshot() -> Vec<FileEntry> {
     file_entries
 }
 
-/// Builds an index of file entries, either by taking a new MFT snapshot or
-/// retrieving from an existing database.
-///
-/// # Returns
-///
-/// This function does not return a value but prints the total number of MFT entries
-/// and the elapsed time.
+/// Builds an index of file entries, either by taking a new MFT snapshot
 pub fn build_index() {
     let before = Instant::now();
 

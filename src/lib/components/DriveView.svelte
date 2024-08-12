@@ -28,7 +28,7 @@
   {#each drives as drive}
     <li
       class="flex items-center p-4 bg-primarybackground hover:bg-secondarybackground transition-colors w-72 hover:cursor-pointer"
-      on:dblclick={() => open_folder(`${drive.disk_label}:`)}
+      on:dblclick={() => open_folder(`${drive.disk_label}:\\`)}
     >
       <i class="icon icon-hard-drive text-2xl text-accentprimary mr-4"></i>
       <div class="flex-1">
