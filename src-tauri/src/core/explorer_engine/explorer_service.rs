@@ -3,7 +3,7 @@
  * Package Name: explorer_engine
  * File Name: explorer_service.rs
  * Author: B74Z3
- * Description: This file provides functionality to perform file system 
+ * Description: This file provides functionality to perform file system
  *              operations like create / delete / open the files and folders
  *              viewing informations etc.
  ******************************************************************************/
@@ -13,7 +13,7 @@
  ******************************************************************************/
 
 // Standard Libraries
-use std::{fs, path::Path, time::Instant};
+use std::{fs, path::Path, process::Command};
 
 // External Crates
 use rayon::iter::{ParallelBridge, ParallelIterator};
@@ -39,19 +39,8 @@ use crate::core::{search_engine::index_service::create_index, FileEntry};
 ******************************************************************************/
 
 /// Opens a folder and retrieves file entries in parallel.
-///
-/// # Arguments
-///
-/// * `file_path` - The path to the folder to be opened.
-///
-/// # Returns
-///
-/// Returns a `Result` containing a vector of `FileEntry` objects if successful,
-/// or an error message if there was an issue reading the directory.
 #[tauri::command]
 pub fn open_folder(folder_path: &str) -> Result<Vec<FileEntry>, String> {
-    let before: Instant = Instant::now();
-
     let path: &Path = Path::new(folder_path);
 
     if path.exists() && path.is_dir() {
@@ -75,9 +64,24 @@ pub fn open_folder(folder_path: &str) -> Result<Vec<FileEntry>, String> {
                 create_index(&entry.path(), &metadata).ok()
             })
             .collect();
-        println!("Elapsed time: {:.2?}", before.elapsed());
         Ok(items)
     } else {
         return Err(format!("Invalid path or not a directory: {}", folder_path));
+    }
+}
+
+/// Opens a file with windows default file opener
+#[tauri::command]
+pub fn open_file(file_path: &str) -> Result<(), String> {
+    let path: &Path = Path::new(file_path);
+
+    if path.exists() && (!path.is_dir()) {
+        let mut cmd = Command::new("cmd");
+        match cmd.arg("/C").arg("start").arg("").arg(file_path).spawn() {
+            Ok(_) => Ok(()),
+            Err(e) => Err(format!("Failed to execute command: {}", e)),
+        }
+    } else {
+        return Err(format!("Invalid path or not a directory: {}", file_path));
     }
 }

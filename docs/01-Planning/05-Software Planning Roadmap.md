@@ -20,6 +20,28 @@ This document outlines the roadmap for the development of the NeoExplorer projec
        - [ ] Tile View
      - [ ] Sorting Files
      - [ ] Filter Files
+     - [x] Breadcrumb navigation
+   - [x] Advance browsing
+     - [x] Multi-Tabbed Browsing
+     - [x] Multi-Windowed Browsing
+   - [x] Add context menu
+       - [x] Open a File with default program set on windows
+       - [x] Open in new window
+       - [x] Open in new tab
+       - [ ] Show Properties
+   - [ ] Implement basic file operations
+     - [ ] Create a File/Folder
+     - [ ] Delete a File/Folder
+   - [x] Implement Searching feature
+     - [x] 0-second searching
+   - [ ] Conduct initial testing and debugging
+   - [ ] Release version 1.0
+
+### Phase 2: Heavy Customization
+
+**Goal**: Enhance the file browser with advanced file operations and improved user experience.
+
+1. **Milestones :**
    - [ ] Design and integrate customizable icons and themes
      - [ ] Theme selector
        - [ ] Basic Light Theme
@@ -30,48 +52,24 @@ This document outlines the roadmap for the development of the NeoExplorer projec
        - [ ] Icons based on extensions
    - [ ] Implement multi-lingual support with localization files
      - [ ] Implement language manager
-     - [ ] Add Support for English language
-     - [ ] Add Support for Bengali language
-   - [ ] Add context menu
-   - [ ] Implement basic file operations
-     - [ ] Open a File with default program set on windows
-     - [ ] Create a File/Folder
-     - [ ] Delete a File/Folder
-     - [ ] Show Properties
-   - [ ] Conduct initial testing and debugging
-   - [ ] Release version 1.0
-
-### Phase 2: Advanced File Operations
-
-**Goal**: Enhance the file browser with advanced file operations and improved user experience.
-
-1. **Features :**
-   - Improved Multi-lingual support:
-     - Chinese
-     - Spanish
-     - Hindi
-   - Advanced file operations:
-     - Open with
-     - Cut
-     - Copy
-     - Paste
-   - Added Accessibility:
-     - Keyboard Shortcuts
-     - Enhaced search bar
-   - Implement Enhanced Feature:
-     - Improved Search Functionality
-     - Tabbed Browsing
-     - File Preview
-
-2. **Milestones :**
-   - [ ] Add new language localization
-   - [ ] Implement "Open with" functionality
-   - [ ] Develop cut, copy, and paste operations
-   - [ ] Implement Breadcrumb navigation
-   - [ ] Add support for keyboard shortcuts
-   - [ ] Implement "Search Functionality"
-   - [ ] Implement "Tabbed Browsing"
-   - [ ] Implement "File Preview"
+     - [ ] Add Support for _English_ language
+     - [ ] Add Support for _Bengali_ language
+     - [ ] Add Support for _Chinese_ language
+     - [ ] Add Support for _Spanish_ language
+     - [ ] Add Support for _Hindi_ language
+   - [ ] Advanced file operations:
+     - [ ] Open with
+     - [ ] Cut
+     - [ ] Copy
+     - [ ] Paste
+   - [ ] Quickview Feature:
+     - [ ] Preview Text Files
+     - [ ] Preview Binary Files
+     - [ ] Preview Images
+     - [ ] Preview PDFs
+   - [ ] Added Accessibility:
+     - [ ] Keyboard Shortcuts
+     - [ ] Enhaced search bar
    - [ ] Conduct extensive testing and debugging
    - [ ] Release version 2.0
 

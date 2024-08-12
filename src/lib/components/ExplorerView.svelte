@@ -1,6 +1,6 @@
 <script>
   import { WindowTabs, ContextMenuList } from "$lib/records.js";
-  import { createContextMenu, open_folder, new_window, new_tab } from "$lib/common.js";
+  import { createContextMenu, open_folder, open_file, new_window, new_tab } from "$lib/common.js";
   import { get_active_tab, notify } from "$lib/utilities";
 
   const activeTab = get_active_tab();
@@ -14,7 +14,11 @@
       pathbuff.push(item.file_name);
       path = pathbuff.join("\\");
     }
-    open_folder(path);
+    if(item.file_attributes.directory){
+      open_folder(path);
+    }else{
+      open_file(path)
+    }
   };
   const show_properties  = async (e, item) => {
     notify("#TODO[Dummy ContextMenu]", "Info");

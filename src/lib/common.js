@@ -52,7 +52,7 @@ export const open_folder = async (folderPath) => {
   const pathBuff = folderPath.split("\\").filter(Boolean);
   try {
     if (folderPath !== "") {
-      folderPath = pathBuff.join("\\")+"\\"
+      folderPath = pathBuff.join("\\") + "\\";
       const response = await invoke("open_folder", { folderPath });
       update_file_count(response.length);
 
@@ -78,7 +78,17 @@ export const open_folder = async (folderPath) => {
     notify(error, "Error");
   }
 };
-
+export const open_file = async (filePath) => {
+  try {
+    if (filePath !== "") {
+      const response = await invoke("open_file", { filePath });
+    } else {
+      notify("No files selected", "Info");
+    }
+  } catch (error) {
+    notify(error, "Error");
+  }
+};
 export const fetch_drives = async () => {
   let response = await invoke("list_drives", {});
   update_file_count(response.length);
