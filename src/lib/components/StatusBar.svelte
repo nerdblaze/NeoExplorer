@@ -1,6 +1,6 @@
 <script>
   import { StatusInfo } from "$lib/records";
-  import Toast from "$lib/Toast.svelte";
+
 </script>
 
 <!-- Status bar -->
@@ -16,6 +16,6 @@
         <li id="explorer-info-theme" class="mx-2"><i class="icon icon-sun text-2xs"></i></li>
         <li id="explorer-info-notification" class="mx-2"><i class="icon icon-bell text-2xs"></i></li>
     </ul>
-    <Toast />
+
 </div>
 

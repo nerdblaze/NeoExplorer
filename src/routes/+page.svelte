@@ -1,11 +1,11 @@
 <script>
-  import { getCurrentWindow, Window, LogicalPosition } from "@tauri-apps/api/window";
+  import { getCurrentWindow } from "@tauri-apps/api/window";
   import { listen } from "@tauri-apps/api/event";
-  import { Webview } from "@tauri-apps/api/webview";
   import { WindowTabs } from "$lib/records";
   import { onDestroy, onMount } from "svelte";
   import { getAllWebviewWindows } from "@tauri-apps/api/webviewWindow";
-  import { open_folder, new_window, new_tab, switch_tab} from "$lib/common";
+  import { open_folder, new_tab, switch_tab } from "$lib/common";
+  import Titlebar from "$lib/components/Titlebar.svelte";
 
   let activeTab = 0;
 
@@ -27,60 +27,6 @@
         new_tab();
       }
     }
-  };
-
-  // Window Handling
-  // const pin_window = async (event) => {
-  //   appWindow.setAlwaysOnTop();
-  // };
-  const appWindow = getCurrentWindow();
-  let isWindowed = true;
-  const minimize_window = async (event) => {
-    appWindow.minimize();
-  };
-
-  const maximize_window = async (event) => {
-    appWindow.toggleMaximize();
-    isWindowed = await appWindow.isMaximized();
-  };
-
-  const close_window = async (event) => {
-    let windows = getAllWebviewWindows();
-    if (windows.length > 1) {
-      appWindow.close();
-    } else {
-      appWindow.hide();
-    }
-  };
-
-  let isWindowDragging = false;
-  let windowPosition = { x: 0, y: 0, isLive: false };
-
-  const startMove = async (event) => {
-    const titleBarMover = document.querySelector("#window-mover");
-    isWindowDragging = titleBarMover === event.target;
-
-    const dragWindow = async (e) => {
-      if (isWindowDragging) {
-        if (windowPosition.isLive === false) {
-          windowPosition = { x: event.clientX, y: event.clientY, isLive: true };
-        }
-        const curPosition = await getCurrentWindow().outerPosition();
-        curPosition.x = curPosition.x - (windowPosition.x - e.clientX);
-        curPosition.y = curPosition.y - (windowPosition.y - e.clientY);
-        await getCurrentWindow().setPosition(curPosition);
-      }
-    };
-
-    const stopMove = () => {
-      isWindowDragging = false;
-      windowPosition.isLive = false;
-      window.removeEventListener("mousemove", dragWindow);
-      window.removeEventListener("mouseup", stopMove);
-    };
-
-    window.addEventListener("mousemove", dragWindow);
-    window.addEventListener("mouseup", stopMove);
   };
 
   // Initial setup
@@ -129,13 +75,14 @@
       id="tab-head-container"
       class="flex flex-row justify-between w-full bg-secondarybackground"
     >
-      <ul
+      <div
         id="tab-heads"
-        class="flex flex-row px-2 h-8 text-sm/6 overflow-hidden"
+        class="flex flex-row px-2 h-8 min-w-64 text-sm/6 overflow-hidden"
       >
         {#each $WindowTabs as tab, idx}
-          <li
+          <a
             class="flex flex-row p-1 max-w-64 w-64 rounded-t-md text-left cursor-pointer {tab.isActive ? 'bg-primarybackground' : ''} justify-between"
+            href="/"
             on:click={() => switch_tab(idx)}
           >
             <span class="overflow-hidden text-nowrap">{$WindowTabs[idx].currentPath.slice(-1)[0] || "This PC"}</span>
@@ -148,56 +95,25 @@
                 tabindex="0"
               ></i>
             </span>
-          </li>
+          </a>
         {/each}
-        <li
-          class="p-2 rounded-t-md cursor-pointer"
-          on:click={()=>new_tab()}
+        <a
+          class="p-2 rounded-t-md"
+          href="/"
         >
-          <i class="icon icon-plus text-2xs"></i>
-        </li>
-      </ul>
-      <div
-        id="window-mover"
-        class="w-16 cursor-move grow"
-        on:mousedown={startMove}
-      ></div>
-      <ul
-        id="window-button-container"
-        class="flex flex-row px-2 h-8 text-sm text-center"
-      >
-        <li
-          class="flex relative p-1 min-w-8 cursor-pointer items-center justify-center"
-          on:click={() => new_window("")}
-        >
-          <i class="absolute icon icon-window text-xs"></i>
-          <i class="absolute right-1 bottom-1 icon icon-circle-plus bg-primarybackground text-2xs"></i>
-        </li>
-        <li
-          class="flex p-1 min-w-8 cursor-pointer items-center justify-center"
-          on:click={minimize_window}
-        >
-          <i class="icon icon-minus text-xs"></i>
-        </li>
-        <li
-          class="flex p-1 min-w-8 cursor-pointer items-center justify-center"
-          on:click={maximize_window}
-        >
-          <i class="icon icon-{isWindowed ? 'expand' : 'compress'} text-xs"></i>
-        </li>
-        <li
-          class="flex p-1 min-w-8 cursor-pointer items-center justify-center"
-          on:click={close_window}
-        >
-          <i class="icon icon-x text-xs"></i>
-        </li>
-      </ul>
+          <i
+            class="icon icon-plus text-2xs"
+            on:click|preventDefault={() => new_tab()}
+          ></i>
+        </a>
+      </div>
+      <Titlebar />
     </div>
     {#each $WindowTabs as tab, index}
       {#if tab.isActive}
         <svelte:component
           this={tab.component}
-          tabIndex={activeTab}
+          tabIndex={index}
           currentPath={tab.currentPath}
         />
       {/if}

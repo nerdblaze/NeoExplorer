@@ -130,16 +130,18 @@ export const new_tab = async (file_path) => {
       },
     ];
   });
-  switch_tab(-1);
+  await switch_tab(-1);
   if (file_path) open_folder(file_path);
 };
 
 // Function to activate a tab
 export const switch_tab = async (index) => {
   WindowTabs.update((items) => {
+    index = (index == -1 ? items.length - 1 : index);
+    update_file_count(items[index].currentView.length);
     return items.map((tab, idx) => ({
       ...tab,
-      isActive: idx == (index == -1 ? items.length - 1 : index),
+      isActive: idx == index,
     }));
   });
 };
