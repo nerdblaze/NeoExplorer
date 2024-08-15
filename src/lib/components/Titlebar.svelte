@@ -57,7 +57,7 @@
   };
 </script>
 
-<header class="flex flex-row justify-end w-full bg-secondarybackground">
+<header class="hidden sm:flex flex-row justify-end h-8 w-full bg-secondarybackground">
   <div
     id="window-mover"
     class="cursor-move grow w-16"

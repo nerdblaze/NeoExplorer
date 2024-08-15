@@ -13,7 +13,7 @@
   const deleteTab = async (index) => {
     $WindowTabs = $WindowTabs.filter((tab, i) => i !== index);
     activeTab = activeTab >= $WindowTabs.length ? Math.max($WindowTabs.length - 1, 0) : activeTab;
-    switch_tab(activeTab);
+    if($WindowTabs.length > 0) switch_tab(activeTab);
   };
 
   // Function to handle keyboard events
@@ -86,13 +86,13 @@
             on:click={() => switch_tab(idx)}
           >
             <span class="overflow-hidden text-nowrap">{$WindowTabs[idx].currentPath.slice(-1)[0] || "This PC"}</span>
-            <span>
+            <span
+              on:click|preventDefault={() => deleteTab(idx)}
+              role="button"
+              tabindex=""
+            >
               <i
                 class="icon icon-x text-2xs"
-                on:click={() => deleteTab(idx)}
-                role="button"
-                aria-label="Close tab"
-                tabindex="0"
               ></i>
             </span>
           </a>

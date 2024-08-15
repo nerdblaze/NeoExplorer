@@ -11,7 +11,6 @@
 
 <main class="w-full h-dvh flex flex-col">
   <slot />
-  <div class="flex flex-grow"></div>
   <StatusBar />
   <ContextMenu />
   <Toast />

@@ -15,9 +15,6 @@
   let search_results = [];
   let breadcrumbsVisible = false;
 
-  // Update breadcrumbs visibility based on current path
-  $: breadcrumbsVisible = $WindowTabs[tabIndex].currentPath.length !== 0;
-
   // Start resizing handler
   const startResize = (event) => {
     isResizing = Math.abs(event.clientX - event.target.getBoundingClientRect().right) <= 16;

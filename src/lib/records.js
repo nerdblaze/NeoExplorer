@@ -5,6 +5,7 @@ export const Notification = writable({
     body:"",
     show:false,
     type:"info",
+    old: []
 });
 export const StatusInfo = writable({
     file_count: 0,

@@ -24,6 +24,7 @@ export const notify = async (msg, typ = "Info") => {
       body: msg,
       show: true,
       type: type,
+      old: [...current.old, { type: type, msg: msg }],
     };
   });
 
@@ -36,6 +37,30 @@ export const notify = async (msg, typ = "Info") => {
       };
     });
   }, 1000);
+};
+
+// export const clear_notification = async (index) => {
+
+//   Notification.update((current) => {
+//     let items = [];
+//     if(index || index===0){
+//       items = current.old;
+//       let part = items.slice(index+1)
+//       items = items.slice(0,index);
+//       items.push(...part);
+//     }
+//     return {
+//       ...current,
+//       old: [...items]
+//     };
+//   });
+
+// };
+export const clear_notification = async (index) => {
+  Notification.update((current) => {
+    const updatedItems = index || index === 0 ? [...current.old.slice(0, index), ...current.old.slice(index + 1)] : [];
+    return { ...current, old: [...updatedItems] };
+  });
 };
 
 export const get_active_tab = () => {
