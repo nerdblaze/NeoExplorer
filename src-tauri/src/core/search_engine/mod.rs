@@ -6,6 +6,8 @@
  * Description: This module handles all search operations
  ******************************************************************************/
 
+use serde::{Deserialize, Serialize};
+
 pub mod database_service;
 pub mod index_service;
 
@@ -21,6 +23,14 @@ pub mod index_service;
  * Structures and Enums:
  ******************************************************************************/
 
+#[derive(Debug, Serialize, Deserialize)]
+pub struct SearchParams {
+    path: Option<String>,
+    name: Option<String>,
+    sort: Option<String>,
+    order: Option<String>,
+    limit: Option<usize>,
+}
 /******************************************************************************
  * Implementations:
  ******************************************************************************/

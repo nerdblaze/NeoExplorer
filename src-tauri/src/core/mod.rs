@@ -18,7 +18,6 @@ use std::sync::{Arc, Mutex};
 
 // External Crates
 use lazy_static::lazy_static;
-use rusqlite::Connection;
 use serde::{Deserialize, Serialize};
 
 // Internal Modules
@@ -39,8 +38,7 @@ const FILE_ATTRIBUTE_ENCRYPTED: u32 = 0x00004000;
 const FILE_ATTRIBUTE_DELETED: u32 = 0x80000000;
 
 lazy_static! {
-    static ref MEM_CONN: Arc<Mutex<Connection>> =
-        Arc::new(Mutex::new(Connection::open_in_memory().unwrap()));
+    static ref INDEX_DB: Arc<Mutex<Vec<FileEntry>>> = Arc::new(Mutex::new(Vec::new()));
 }
 
 /******************************************************************************
@@ -49,7 +47,6 @@ lazy_static! {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct FileEntry {
-    file_name: String,
     file_path: String,
     file_size: u64,
     file_modification_time: u64,
@@ -103,53 +100,6 @@ impl FileAttributes {
             encrypted: attributes & FILE_ATTRIBUTE_ENCRYPTED != 0,
             deleted: attributes & FILE_ATTRIBUTE_DELETED != 0,
         }
-    }
-    fn to_u32(&self) -> u32 {
-        0 | (if self.read_only {
-            FILE_ATTRIBUTE_READONLY
-        } else {
-            0
-        }) | (if self.hidden {
-            FILE_ATTRIBUTE_HIDDEN
-        } else {
-            0
-        }) | (if self.system {
-            FILE_ATTRIBUTE_SYSTEM
-        } else {
-            0
-        }) | (if self.directory {
-            FILE_ATTRIBUTE_DIRECTORY
-        } else {
-            0
-        }) | (if self.archive {
-            FILE_ATTRIBUTE_ARCHIVE
-        } else {
-            0
-        }) | (if self.device {
-            FILE_ATTRIBUTE_DEVICE
-        } else {
-            0
-        }) | (if self.temporary {
-            FILE_ATTRIBUTE_TEMPORARY
-        } else {
-            0
-        }) | (if self.compressed {
-            FILE_ATTRIBUTE_COMPRESSED
-        } else {
-            0
-        }) | (if self.offline {
-            FILE_ATTRIBUTE_OFFLINE
-        } else {
-            0
-        }) | (if self.encrypted {
-            FILE_ATTRIBUTE_ENCRYPTED
-        } else {
-            0
-        }) | (if self.deleted {
-            FILE_ATTRIBUTE_DELETED
-        } else {
-            0
-        })
     }
 }
 

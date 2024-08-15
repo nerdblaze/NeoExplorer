@@ -46,6 +46,11 @@ export const createContextMenu = async (event, callback, ...args) => {
   });
 };
 
+const add_file_name = async (item) => {
+  await new Promise(resolve => setTimeout(resolve, 100)); // Simulate async delay
+  return { ...item, file_name: item.file_path.split("\\").pop() };
+}
+
 // Open a folder and handle potential errors
 export const open_folder = async (folderPath) => {
   const activeTab = get_active_tab();
@@ -53,7 +58,9 @@ export const open_folder = async (folderPath) => {
   try {
     if (folderPath !== "") {
       folderPath = pathBuff.join("\\") + "\\";
-      const response = await invoke("open_folder", { folderPath });
+      let response = await invoke("open_folder", { folderPath });
+      response = await Promise.all(response.map(add_file_name));
+      
       update_file_count(response.length);
 
       WindowTabs.update((items) => {
@@ -96,10 +103,11 @@ export const fetch_drives = async () => {
 };
 export const search_system = async (search_term) => {
   let search_results = [];
-  let page = 1;
   const activeTab = get_active_tab();
-  const pageSize = 10000;
-  search_results = await invoke("search_system", { searchTerm: search_term, page, pageSize });
+  const limit = 10000;
+  const params = { path: search_term, limit };
+  search_results = await invoke("search_system", { params });
+  search_results = await Promise.all(search_results.map(add_file_name));
   update_file_count(search_results.length);
   WindowTabs.update((items) => {
     items[activeTab] = {
@@ -137,7 +145,7 @@ export const new_tab = async (file_path) => {
 // Function to activate a tab
 export const switch_tab = async (index) => {
   WindowTabs.update((items) => {
-    index = (index == -1 ? items.length - 1 : index);
+    index = index == -1 ? items.length - 1 : index;
     update_file_count(items[index].currentView.length);
     return items.map((tab, idx) => ({
       ...tab,

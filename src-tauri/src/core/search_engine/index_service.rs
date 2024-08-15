@@ -24,8 +24,7 @@ use sysinfo::Disks;
 
 // Internal Modules
 use crate::core::{
-    search_engine::database_service::{insert_entries, retrieve_db, setup_database, store_db},
-    FileAttributes, FileEntry, WindowsDrives, MEM_CONN,
+    search_engine::database_service::{retrieve_db, store_db}, FileAttributes, FileEntry, WindowsDrives, INDEX_DB
 };
 use crate::utilities::{file::file_exists, time::system_time_to_unix_time};
 
@@ -49,21 +48,13 @@ const DB_FILENAME: &str = "target/index.db";
 
 /// Creates a `FileEntry` object from the given path and metadata.
 pub fn create_index(path: &Path, metadata: &Metadata) -> io::Result<FileEntry> {
-    let file_name = path
-        .file_name()
-        .unwrap_or_default()
-        .to_string_lossy()
-        .into_owned()
-        .replace("'", "");
     let file_path = path.to_string_lossy().into_owned().replace("'", "");
-
     let file_size = metadata.len();
     let file_modification_time = metadata.modified().map_or(0, system_time_to_unix_time);
     let file_creation_time = metadata.created().map_or(0, system_time_to_unix_time);
     let file_access_time = metadata.accessed().map_or(0, system_time_to_unix_time);
     let file_attributes = FileAttributes::from_u32(metadata.file_attributes());
     Ok(FileEntry {
-        file_name,
         file_path,
         file_size,
         file_modification_time,
@@ -138,21 +129,15 @@ pub fn build_index() {
     let before = Instant::now();
 
     let filename: &str = DB_FILENAME;
-    let master_file_table: Vec<FileEntry>;
+    let binding = INDEX_DB.clone();
+    let mut master_file_table = binding.lock().unwrap();
 
     if !file_exists(filename) {
-        master_file_table = take_storage_snapshot();
+        *master_file_table = take_storage_snapshot();
         let _ = store_db(&master_file_table, filename);
     } else {
-        master_file_table = retrieve_db(filename).unwrap();
+        *master_file_table = retrieve_db(filename).unwrap();
     }
-
-    let mem_conn = MEM_CONN.lock().unwrap();
-
-    let _ = setup_database(&mem_conn);
-    let _ = insert_entries(&mem_conn, &master_file_table);
-
-    drop(mem_conn);
 
     println!("Total MFT Entries retrieved: {}", master_file_table.len());
     println!("Elapsed time: {:.2?}", before.elapsed());
