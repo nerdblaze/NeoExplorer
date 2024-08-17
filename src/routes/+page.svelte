@@ -77,11 +77,11 @@
     >
       <div
         id="tab-heads"
-        class="flex flex-row px-2 h-8 min-w-64 text-sm/6 overflow-hidden"
+        class="flex flex-row px-2 h-10 min-w-64 text-sm/6 overflow-hidden"
       >
         {#each $WindowTabs as tab, idx}
           <a
-            class="flex flex-row p-1 max-w-64 w-64 rounded-t-md text-left cursor-pointer {tab.isActive ? 'bg-primarybackground' : ''} justify-between"
+            class="flex flex-row p-1 mt-2 max-w-64 w-64 rounded-t-md text-left cursor-pointer {tab.isActive ? 'bg-primarybackground' : ''} justify-between"
             href="/"
             on:click={() => switch_tab(idx)}
           >

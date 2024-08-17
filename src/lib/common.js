@@ -130,6 +130,7 @@ export const new_tab = async (file_path) => {
       {
         component: TabWindowComponent,
         isActive: false,
+        viewMode: 0,
         hasPreview: false,
         searchTerm: "",
         currentPath: [],

@@ -27,7 +27,7 @@
 <!-- Status bar -->
 <div
   id="status-bar"
-  class="w-full h-8 sticky z-50 bottom-0 flex flex-row justify-between p-2 text-sm border-t border-secondarybackground bg-primarybackground"
+  class="w-full h-8 sticky z-50 bottom-0 flex flex-row justify-between p-2 text-sm border-t border-surfacebackground bg-primarybackground"
 >
   <ul
     id="file-info"

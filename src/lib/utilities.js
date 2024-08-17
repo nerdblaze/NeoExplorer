@@ -1,6 +1,7 @@
 import { Notification, WindowTabs, StatusInfo } from "$lib/records.js";
+import dayjs from "dayjs";
 
-export function formatBytes(bytes) {
+export const formatBytes = (bytes) => {
   if (bytes === 0) return "0 B";
 
   const units = ["B", "KB", "MB", "GB", "TB", "PB"];
@@ -8,7 +9,11 @@ export function formatBytes(bytes) {
   const i = Math.floor(Math.log(bytes) / Math.log(k));
 
   return `${(bytes / Math.pow(k, i)).toFixed(2)} ${units[i]}`;
-}
+};
+
+export const formatDates = (seconds) => {
+  return dayjs(seconds * 1000).format("DD/MM/YYYY HH:mm");
+};
 
 export const notify = async (msg, typ = "Info") => {
   // Define the valid types
@@ -39,23 +44,6 @@ export const notify = async (msg, typ = "Info") => {
   }, 1000);
 };
 
-// export const clear_notification = async (index) => {
-
-//   Notification.update((current) => {
-//     let items = [];
-//     if(index || index===0){
-//       items = current.old;
-//       let part = items.slice(index+1)
-//       items = items.slice(0,index);
-//       items.push(...part);
-//     }
-//     return {
-//       ...current,
-//       old: [...items]
-//     };
-//   });
-
-// };
 export const clear_notification = async (index) => {
   Notification.update((current) => {
     const updatedItems = index || index === 0 ? [...current.old.slice(0, index), ...current.old.slice(index + 1)] : [];

@@ -8,7 +8,7 @@
   --SecondaryBackground: #F0F0F0;
   --SurfaceBackground: #E8E8E8;
 
-  --PrimaryText: #1A1A1A;
+  --PrimaryText: #191919;
   --SecondaryText: #4A4A4A;
   --HintText: #707070;
 
@@ -23,9 +23,9 @@
 
 @media (prefers-color-scheme: dark) {
   [data-theme='dark'] {
-    --PrimaryBackground: #1C1C1C;
-    --SecondaryBackground: #121212;
-    --SurfaceBackground: #2A2A2A;
+    --PrimaryBackground: #191919;
+    --SecondaryBackground: #040808;
+    --SurfaceBackground: #383838;
 
     --PrimaryText: #ECECEC;
     --SecondaryText: #BFBFBF;

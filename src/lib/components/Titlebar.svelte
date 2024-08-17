@@ -67,7 +67,7 @@
   ></div>
   <div
     id="window-button-container"
-    class="flex flex-row px-2 h-8 text-sm text-center"
+    class="flex flex-row h-8 text-sm text-center"
   >
     <a
       class="flex relative items-center justify-center w-8 hover:bg-surfacebackground cursor-pointer"

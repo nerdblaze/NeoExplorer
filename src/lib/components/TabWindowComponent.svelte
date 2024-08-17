@@ -13,7 +13,7 @@
   let width = 200;
   let isResizing = false;
   let search_results = [];
-  let breadcrumbsVisible = false;
+  let breadcrumbsVisible = true;
 
   // Start resizing handler
   const startResize = (event) => {
@@ -46,6 +46,7 @@
       event.preventDefault();
       search_system($WindowTabs[tabIndex].searchTerm);
     } else if (event.key === "Backspace") {
+      if (event.target.nodeName === "INPUT") return;
       goBack();
     }
   };
@@ -112,6 +113,9 @@
       reloadPage();
     }
   }
+  const toggle_view = async () => {
+    $WindowTabs[tabIndex].viewMode = ($WindowTabs[tabIndex].viewMode + 1) % 2;
+  };
 </script>
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -119,7 +123,7 @@
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <div
   id="tab-quickbar-container"
-  class="h-8 w-full flex items-center justify-between bg-primarybackground my-2 mx-auto"
+  class="h-10 w-full flex items-center justify-between bg-primarybackground my-1 pb-1 mx-auto shadow-sm shadow-dividerline"
 >
   <ul
     id="tab-quickbar-nav"
@@ -147,7 +151,7 @@
 
   <div
     id="tab-quickbar-search"
-    class="flex flex-grow mx-4 text-nowrap overflow-x-scroll"
+    class="flex flex-grow mx-4 px-2 py-1 text-nowrap overflow-x-scroll bg-surfacebackground rounded-lg"
   >
     {#if breadcrumbsVisible}
       <!-- Breadcrumbs Section -->
@@ -180,18 +184,19 @@
             {/if}
           </li>
         {/each}
-        </ul>
+      </ul>
     {:else}
       <!-- Search Bar Section -->
+       <i class="flex icon icon-magnifying-glass text-2xs items-center"></i>
       <input
         id="search-input"
         type="text"
-        class="w-full h-8 bg-surfacebackground border border-hinttext rounded-lg px-3 focus:outline-none focus:border-accentprimary"
-        placeholder="🔍 Search..."
+        class="w-full h-6 bg-surfacebackground mx-2 py-1 focus:outline-none focus:border-accentprimary"
+        placeholder="Search..."
         bind:value={$WindowTabs[tabIndex].searchTerm}
       />
     {/if}
-    </div>
+  </div>
 
   <ul
     id="tab-quickbar-tool"
@@ -203,7 +208,10 @@
     <li class="w-6 h-6 flex items-center justify-center text-primarytext cursor-pointer hover:text-accentprimary">
       <i class="icon icon-filter text-xs"></i>
     </li>
-    <li class="w-6 h-6 flex items-center justify-center text-primarytext cursor-pointer hover:text-accentprimary">
+    <li
+      class="w-6 h-6 flex items-center justify-center text-primarytext cursor-pointer hover:text-accentprimary"
+      on:click={toggle_view}
+    >
       <i class="icon icon-list text-xs"></i>
     </li>
     <li class="w-6 h-6 flex items-center justify-center text-primarytext cursor-pointer hover:text-accentprimary">
@@ -219,7 +227,7 @@
   <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div
     id="tree-view-container"
-    class="flex flex-col border-r border-dividerline"
+    class="hidden md:flex flex-col border-r border-dividerline"
     style="width: {width}px;"
     on:mousedown={startResize}
   ></div>
@@ -249,7 +257,7 @@
     scrollbar-width: thin;
     scrollbar-track-color: transparent;
   }
-  #tab-quickbar-search{
+  #tab-quickbar-search {
     scrollbar-width: none;
   }
 </style>
