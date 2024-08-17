@@ -1,23 +1,20 @@
 /******************************************************************************
  * Project Name: NeoExplorer
- * Package Name: explorer_engine
+ * Package Name: file_service
  * File Name: mod.rs
  * Author: B74Z3
- * Description: This module handles all explorer operations
+ * Description: This module handles all file operations
  ******************************************************************************/
 
-pub mod explorer_service;
-pub mod file_service;
+pub mod info_handler;
 
 /******************************************************************************
  * Libraries:
  ******************************************************************************/
+
 // Standard Libraries
-use std::collections::HashMap;
 
 // External Crates
-// use rayon::iter::{ParallelBridge, ParallelIterator};
-use serde::{Deserialize, Serialize};
 
 // Internal Modules
 
@@ -28,15 +25,11 @@ use serde::{Deserialize, Serialize};
 /******************************************************************************
  * Structures and Enums:
  ******************************************************************************/
-#[derive(Serialize, Deserialize, Debug)]
-pub struct FileInfo {
-    categories: HashMap<String, HashMap<String, String>>,
-}
 
 /******************************************************************************
  * Implementations:
  ******************************************************************************/
 
 /******************************************************************************
-* Functions:
+ * Functions:
  ******************************************************************************/

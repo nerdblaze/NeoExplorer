@@ -5,7 +5,7 @@
   import { get_active_tab, notify } from "$lib/utilities";
   import { open_folder, search_system } from "$lib/common";
   import { WindowTabs, StatusInfo } from "$lib/records";
-  import ExplorerView from "./ExplorerView.svelte";
+  import ExplorerView from "$lib/components/ExplorerView.svelte";
 
   export let tabIndex = 0;
 
@@ -123,7 +123,7 @@
 <!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <div
   id="tab-quickbar-container"
-  class="h-10 w-full flex items-center justify-between bg-primarybackground my-1 pb-1 mx-auto shadow-sm shadow-dividerline"
+  class="h-10 w-full flex items-center justify-between bg-primarybackground my-1 pb-1 mx-auto shadow-sm shadow-surfacebackground"
 >
   <ul
     id="tab-quickbar-nav"

@@ -53,7 +53,6 @@
     { category: "Tags", icon: "tags", widgets: [], active: false },
   ];
   const switch_settings = (index) => {
-    console.log(settings_page[1].widgets[0]);
     settings_page = settings_page.map((item, idx) => ({
       ...item,
       active: index === idx,

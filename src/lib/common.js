@@ -1,6 +1,7 @@
-import { ContextMenuList, WindowTabs } from "./records";
-import { notify, get_active_tab, update_file_count } from "./utilities";
 import { invoke } from "@tauri-apps/api/core";
+import { once } from "@tauri-apps/api/event";
+import { ContextMenuList, WindowTabs } from "$lib/records";
+import { notify, get_active_tab, update_file_count } from "$lib/utilities";
 import TabWindowComponent from "$lib/components/TabWindowComponent.svelte";
 
 // Function to hide the context menu
@@ -47,9 +48,9 @@ export const createContextMenu = async (event, callback, ...args) => {
 };
 
 const add_file_name = async (item) => {
-  await new Promise(resolve => setTimeout(resolve, 100)); // Simulate async delay
+  await new Promise((resolve) => setTimeout(resolve, 100)); // Simulate async delay
   return { ...item, file_name: item.file_path.split("\\").pop() };
-}
+};
 
 // Open a folder and handle potential errors
 export const open_folder = async (folderPath) => {
@@ -60,7 +61,7 @@ export const open_folder = async (folderPath) => {
       folderPath = pathBuff.join("\\") + "\\";
       let response = await invoke("open_folder", { folderPath });
       response = await Promise.all(response.map(add_file_name));
-      
+
       update_file_count(response.length);
 
       WindowTabs.update((items) => {
@@ -118,8 +119,17 @@ export const search_system = async (search_term) => {
   });
 };
 
-export const new_window = async (folderPath) => {
-  const response = await invoke("create_new_window", { folderPath });
+export const new_window = async (initUrl = "", folderPath = "") => {
+  return await invoke("create_new_window", { initUrl, folderPath });
+};
+
+export const init_window = async (handler) => {
+  let unlisten = await once("initialize", handler);
+  setTimeout(() => {
+    if (unlisten) {
+      unlisten();
+    }
+  }, 500);
 };
 
 // Function to add a new tab
@@ -153,4 +163,8 @@ export const switch_tab = async (index) => {
       isActive: idx == index,
     }));
   });
+};
+
+export const get_properties = async (filePath) => {
+  return await invoke("get_file_info", { filePath });
 };

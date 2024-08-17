@@ -11,11 +11,10 @@
  * Libraries:
  ******************************************************************************/
 // Standard Libraries
-use std::fs::Metadata;
 use std::io;
-use std::os::windows::fs::MetadataExt;
 use std::path::Path;
 use std::time::Instant;
+use std::{fs::Metadata, os::windows::fs::MetadataExt};
 
 // External Crates
 use jwalk::WalkDir;
@@ -24,7 +23,8 @@ use sysinfo::Disks;
 
 // Internal Modules
 use crate::core::{
-    search_engine::database_service::{retrieve_db, store_db}, FileAttributes, FileEntry, WindowsDrives, INDEX_DB
+    search_engine::database_service::{retrieve_db, store_db},
+    FileAttributes, FileEntry, WindowsDrives, INDEX_DB,
 };
 use crate::utilities::{file::file_exists, time::system_time_to_unix_time};
 

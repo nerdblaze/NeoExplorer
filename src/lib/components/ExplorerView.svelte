@@ -5,46 +5,48 @@
 
   const activeTab = get_active_tab();
 
-  const open_item = async (e, item) => {
-    let path = "";
-    if ($WindowTabs[activeTab].searchTerm) {
-      path = item.file_path;
-    } else {
-      let pathbuff = [...$WindowTabs[activeTab].currentPath];
-      pathbuff.push(item.file_name);
-      path = pathbuff.join("\\");
+  const handleEvent = async (e, item, action) => {
+    e.preventDefault();
+    switch (action) {
+      case "open":
+        let path = "";
+        if ($WindowTabs[activeTab].searchTerm) {
+          path = item.file_path;
+        } else {
+          let pathbuff = [...$WindowTabs[activeTab].currentPath];
+          pathbuff.push(item.file_name);
+          path = pathbuff.join("\\");
+        }
+        item.file_attributes.directory ? open_folder(path) : open_file(path);
+        break;
+      case "properties":
+        new_window("/properties", item.file_path);
+        break;
+      case "delete":
+        notify("#TODO[Dummy ContextMenu]", "Warning");
+        break;
+      case "open_in_tab":
+        if (item.file_attributes.directory) {
+          new_tab(item.file_path);
+        }
+        break;
+      case "open_in_window":
+        if (item.file_attributes.directory) {
+          new_window("/", item.file_path);
+        }
+        break;
+      default:
+        break;
     }
-    if (item.file_attributes.directory) {
-      open_folder(path);
-    } else {
-      open_file(path);
-    }
   };
-  const show_properties = async (e, item) => {
-    notify("#TODO[Dummy ContextMenu]", "Info");
-  };
-  const delete_item = async (e, item) => {
-    notify("#TODO[Dummy ContextMenu]", "Warning");
-  };
-  const open_in_tab = async (e, item) => {
-    if (item.file_attributes.directory) {
-      new_tab(item.file_path);
-    }
-  };
-  const open_in_window = async (e, item) => {
-    if (item.file_attributes.directory) {
-      new_window(item.file_path);
-    }
-  };
-  const show_context_options = async (e, item) => {
+
+  const show_context_options = (e, item) => {
     $ContextMenuList.items = [
-      ...[
-        { label: "Open", callback: open_item, args: [e, item] },
-        { label: "Open in new tab", callback: open_in_tab, args: [e, item] },
-        { label: "Open in new window", callback: open_in_window, args: [e, item] },
-        { label: "Delete", callback: delete_item, args: [e, item] },
-        { label: "Properties", callback: show_properties, args: [e, item] },
-      ],
+      { label: "Open", callback: handleEvent, args: [e, item, "open"] },
+      { label: "Open in new tab", callback: handleEvent, args: [e, item, "open_in_tab"] },
+      { label: "Open in new window", callback: handleEvent, args: [e, item, "open_in_window"] },
+      { label: "Delete", callback: handleEvent, args: [e, item, "delete"] },
+      { label: "Properties", callback: handleEvent, args: [e, item, "properties"] },
     ];
   };
 </script>
@@ -59,24 +61,23 @@
       <li class="text-primarytext">Empty</li>
     {/if}
 
-    {#each $WindowTabs[activeTab].currentView as item}
-      <li class="flex items-center p-2 min-w-64 w-full sm:w-1/2 md:w-1/4 lg:w-1/6">
-        <a
+    {#each $WindowTabs[activeTab].currentView as item, idx}
+      <li class="flex items-center p-2 min-w-64 w-full sm:w-1/2 md:w-1/4 lg:w-1/6 hover:bg-surfacebackground rounded-md overflow-hidden">
+        <button
           class="flex items-center"
-          href="/"
-          on:dblclick|preventDefault={(e) => open_item(e, item)}
+          on:dblclick|preventDefault={(e) => handleEvent(e, item, "open")}
           on:contextmenu|preventDefault={(e) => createContextMenu(e, show_context_options, e, item)}
-          role="button"
+          tabindex={idx}
         >
           <i class="flex justify-center items-center w-16 h-16 icon icon-{item.file_attributes.directory ? 'folder' : 'file'} cursor-pointer text-3xl"></i>
           <ul class="flex flex-col text-xs">
-            <span class="flex">{item.file_name.length > 31 ? item.file_name.slice(0, 31) + "..." : item.file_name}</span>
+            <span class="flex w-full text-nowrap">{item.file_name}{item.file_name.length > 30 ? "..." : ""}</span>
             {#if !item.file_attributes.directory}
               <span class="flex">{item.file_name.slice(item.file_name.lastIndexOf(".") + 1)} file</span>
               <span class="flex">{formatBytes(item.file_size)}</span>
             {/if}
           </ul>
-        </a>
+        </button>
       </li>
     {/each}
   </ul>
@@ -91,17 +92,16 @@
     {/if}
 
     {#each $WindowTabs[activeTab].currentView as item}
-      <li class="flex items-center p-2 w-full overflow-hidden">
-        <a
+      <li class="flex items-center p-2 w-full overflow-hidden hover:bg-surfacebackground rounded-md">
+        <button
           class="flex items-center w-full"
-          href="/"
-          on:dblclick|preventDefault={(e) => open_item(e, item)}
+          on:dblclick|preventDefault={(e) => handleEvent(e, item, "open")}
           on:contextmenu|preventDefault={(e) => createContextMenu(e, show_context_options, e, item)}
-          role="button"
+          tabindex="0"
         >
           <i class="flex justify-center items-center w-8 h-8 icon icon-{item.file_attributes.directory ? 'folder' : 'file'} cursor-pointer text-lg"></i>
           <ul class="flex flex-row text-sm w-full h-10 justify-between">
-            <span class="flex px-2 py-1 w-full overflow-hidden text-wrap">{item.file_name}</span>
+            <span class="flex px-2 py-1 w-full overflow-hidden text-wrap text-left">{item.file_name}</span>
             <span class="flex px-2 py-1 w-1/5 overflow-hidden text-wrap items-center">{formatDates(item.file_modification_time)}</span>
             <span class="flex px-2 w-2/12 overflow-hidden text-wrap items-center">
               {#if !item.file_attributes.directory}
@@ -116,7 +116,7 @@
               {/if}
             </span>
           </ul>
-        </a>
+        </button>
       </li>
     {/each}
   </ul>

@@ -3,6 +3,7 @@
   import { getCurrentWindow } from "@tauri-apps/api/window";
   import { getAllWebviewWindows } from "@tauri-apps/api/webviewWindow";
 
+  export let title = "";
   let isWindowed = true;
 
   const minimize_window = async (event) => {
@@ -60,11 +61,11 @@
 <header class="hidden sm:flex flex-row justify-end h-8 w-full bg-secondarybackground">
   <div
     id="window-mover"
-    class="cursor-move grow w-16"
+    class="cursor-move flex grow min-w-16"
     on:mousedown={startMove}
     role="button"
     tabindex=""
-  ></div>
+  ><span class="flex px-2 text-xl font-semibold">{title.slice(0,48)}</span></div>
   <div
     id="window-button-container"
     class="flex flex-row h-8 text-sm text-center"
@@ -72,7 +73,7 @@
     <a
       class="flex relative items-center justify-center w-8 hover:bg-surfacebackground cursor-pointer"
       href="/"
-      on:click|preventDefault={() => new_window("")}
+      on:click|preventDefault={() => new_window("/","")}
     >
       <i class="absolute icon icon-window text-xs"></i>
       <i class="absolute right-1 bottom-1 icon icon-circle-plus bg-secondarybackground text-2xs"></i>

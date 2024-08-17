@@ -37,23 +37,31 @@ use super::WINDOW_COUNTER;
  ******************************************************************************/
 
 #[tauri::command]
-pub async fn create_new_window(app: AppHandle, folder_path: Option<String>) {
+pub async fn create_new_window(
+    app: AppHandle,
+    folder_path: Option<String>,
+    init_url: Option<String>,
+) {
     spawn(move || {
         let binding = WINDOW_COUNTER.clone();
         let mut counter = binding.lock().unwrap();
         *counter += 1;
         let folder_path = folder_path.unwrap_or_else(|| "".to_string());
+        let init_url = init_url.unwrap_or_else(|| "/".to_string());
         let new_label = format!("label-{}", counter);
         let new_window =
-            WebviewWindowBuilder::new(&app, &new_label, WebviewUrl::App("index.html".into()))
+            WebviewWindowBuilder::new(&app, &new_label, WebviewUrl::App(init_url.into()))
                 .decorations(false)
                 .visible(false)
                 .build()
                 .unwrap();
-        sleep(time::Duration::from_millis(250));
-        new_window
-            .emit_to(EventTarget::labeled(&new_label), "initialize", folder_path)
-            .unwrap();
+
+        if !folder_path.is_empty() {
+            sleep(time::Duration::from_millis(250));
+            new_window
+                .emit_to(EventTarget::labeled(&new_label), "initialize", folder_path)
+                .unwrap();
+        }
         let _ = new_window.show();
     });
 }

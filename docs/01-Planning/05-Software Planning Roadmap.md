@@ -14,10 +14,9 @@ This document outlines the roadmap for the development of the NeoExplorer projec
    - [x] Set up the project structure and initial repository
    - [x] Develop the main UI for file browsing
      - [x] Listing a file/folders
-     - [ ] Viewing Files
-       - [ ] List View
-       - [ ] Detail View
-       - [ ] Tile View
+     - [x] Viewing Files
+       - [x] List View
+       - [x] Tile View
      - [ ] Sorting Files
      - [ ] Filter Files
      - [x] Breadcrumb navigation
@@ -28,7 +27,7 @@ This document outlines the roadmap for the development of the NeoExplorer projec
        - [x] Open a File with default program set on windows
        - [x] Open in new window
        - [x] Open in new tab
-       - [ ] Show Properties
+       - [x] Show Properties
    - [ ] Implement basic file operations
      - [ ] Create a File/Folder
      - [ ] Delete a File/Folder

@@ -1,11 +1,11 @@
 <script>
   import { getCurrentWindow } from "@tauri-apps/api/window";
-  import { listen } from "@tauri-apps/api/event";
   import { WindowTabs } from "$lib/records";
   import { onDestroy, onMount } from "svelte";
   import { getAllWebviewWindows } from "@tauri-apps/api/webviewWindow";
-  import { open_folder, new_tab, switch_tab } from "$lib/common";
+  import { open_folder, new_tab, switch_tab, init_window } from "$lib/common";
   import Titlebar from "$lib/components/Titlebar.svelte";
+  import StatusBar from "$lib/components/StatusBar.svelte";
 
   let activeTab = 0;
 
@@ -13,7 +13,7 @@
   const deleteTab = async (index) => {
     $WindowTabs = $WindowTabs.filter((tab, i) => i !== index);
     activeTab = activeTab >= $WindowTabs.length ? Math.max($WindowTabs.length - 1, 0) : activeTab;
-    if($WindowTabs.length > 0) switch_tab(activeTab);
+    if ($WindowTabs.length > 0) switch_tab(activeTab);
   };
 
   // Function to handle keyboard events
@@ -40,15 +40,9 @@
 
     const onInitTab = (event) => {
       open_folder(event.payload);
-      if (unlisten) unlisten();
     };
 
-    let unlisten = await listen("initialize", onInitTab);
-    setTimeout(() => {
-      if (unlisten) {
-        unlisten();
-      }
-    }, 500);
+    init_window(onInitTab);
   });
 
   // Remove keyboard event listener on destroy
@@ -91,9 +85,7 @@
               role="button"
               tabindex=""
             >
-              <i
-                class="icon icon-x text-2xs"
-              ></i>
+              <i class="icon icon-x text-2xs"></i>
             </span>
           </a>
         {/each}
@@ -120,3 +112,4 @@
     {/each}
   </div>
 </div>
+<StatusBar />

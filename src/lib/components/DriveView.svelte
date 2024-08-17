@@ -23,7 +23,7 @@
   class="flex flex-row p-2 flex-wrap"
 >
   {#if drives.length === 0}
-    <li class="text-primarytext">Nothing to show</li>
+    <li class="text-primarytext text-center w-full">Nothing to show</li>
   {/if}
   {#each drives as drive}
     <li

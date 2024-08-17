@@ -1,4 +1,5 @@
 <script>
+  import { new_window } from "$lib/common";
   import { StatusInfo, Notification } from "$lib/records";
   import { clear_notification } from "$lib/utilities";
   import { onMount } from "svelte";
@@ -9,7 +10,7 @@
     window.location.href = "/";
   };
   const open_settings = async () => {
-    window.location.href = "/settings";
+    new_window("/settings","");
   };
   const toggle_theme = async () => {
     document.documentElement.setAttribute("data-theme", isDarkTheme ? "light" : "dark");

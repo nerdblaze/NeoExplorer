@@ -17,7 +17,6 @@ use std::{fs, path::Path, process::Command};
 
 // External Crates
 use rayon::iter::{ParallelBridge, ParallelIterator};
-use rusqlite::Result;
 
 // Internal Modules
 use crate::core::{search_engine::index_service::create_index, FileEntry};
