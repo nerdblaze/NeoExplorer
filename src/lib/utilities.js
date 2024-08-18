@@ -66,3 +66,24 @@ export const update_file_count = async (file_count) => {
     };
   });
 };
+
+export const sort_array = (array, column, ascending = false) => {
+  // Determine the sorting order multiplier
+  const sortModifier = ascending ? 1 : -1;
+
+  // Comparator function to handle sorting
+  const compare = (a, b) => {
+    const valA = a[column];
+    const valB = b[column];
+
+    if (typeof valA === "string" && typeof valB === "string") {
+      return valA.localeCompare(valB) * sortModifier;
+    }
+
+    if (valA > valB) return sortModifier;
+    if (valA < valB) return -sortModifier;
+    return 0;
+  };
+
+  return [...array].sort(compare);
+};

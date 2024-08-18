@@ -17,9 +17,11 @@ This document outlines the roadmap for the development of the NeoExplorer projec
      - [x] Viewing Files
        - [x] List View
        - [x] Tile View
-     - [ ] Sorting Files
-     - [ ] Filter Files
+     - [x] Sorting Files
      - [x] Breadcrumb navigation
+     - [x] Theme selector
+       - [x] Basic Light Theme
+       - [x] Basic Dark Theme
    - [x] Advance browsing
      - [x] Multi-Tabbed Browsing
      - [x] Multi-Windowed Browsing
@@ -43,8 +45,6 @@ This document outlines the roadmap for the development of the NeoExplorer projec
 1. **Milestones :**
    - [ ] Design and integrate customizable icons and themes
      - [ ] Theme selector
-       - [ ] Basic Light Theme
-       - [ ] Basic Dark Theme
        - [ ] Dynamic switching between themes
      - [ ] Icon Selector
        - [ ] Basic file/folder icons
@@ -61,6 +61,7 @@ This document outlines the roadmap for the development of the NeoExplorer projec
      - [ ] Cut
      - [ ] Copy
      - [ ] Paste
+     - [ ] Filter Files
    - [ ] Quickview Feature:
      - [ ] Preview Text Files
      - [ ] Preview Binary Files

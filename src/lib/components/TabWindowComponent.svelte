@@ -203,9 +203,6 @@
     class="flex items-center space-x-2"
   >
     <li class="w-6 h-6 flex items-center justify-center text-primarytext cursor-pointer hover:text-accentprimary">
-      <i class="icon icon-arrow-up-arrow-down text-xs"></i>
-    </li>
-    <li class="w-6 h-6 flex items-center justify-center text-primarytext cursor-pointer hover:text-accentprimary">
       <i class="icon icon-filter text-xs"></i>
     </li>
     <li

@@ -16,7 +16,7 @@ use std::{collections::HashMap, ffi::OsStr, fs::FileType, path::Path};
 // External Crates
 
 // Internal Modules
-use crate::core::explorer_engine::FileInfo;
+use crate::{core::explorer_engine::FileInfo, utilities::file::format_bytes};
 
 /******************************************************************************
  * Constants:
@@ -63,7 +63,7 @@ pub async fn get_file_info(file_path: &str) -> Result<FileInfo, String> {
             .to_string_lossy()
             .into_owned(),
     );
-    general.insert("size".to_string(), meta.len().to_string());
+    general.insert("size".to_string(), format_bytes(meta.len()));
     general.insert(
         "attributes".to_string(),
         get_file_type_description(&meta.file_type()),

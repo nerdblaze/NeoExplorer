@@ -28,7 +28,7 @@ export const showContextMenu = async (event) => {
 // Main function to determine which context menu to show based on item type
 export const createContextMenu = async (event, callback, ...args) => {
   showContextMenu(event);
-  await callback(...args);
+  await callback(event, ...args);
 
   const contextMenu = document.querySelector("#context-menu-container");
   const ww = window.innerWidth;
@@ -47,9 +47,11 @@ export const createContextMenu = async (event, callback, ...args) => {
   });
 };
 
-const add_file_name = async (item) => {
+const process_response = async (item) => {
   await new Promise((resolve) => setTimeout(resolve, 100)); // Simulate async delay
-  return { ...item, file_name: item.file_path.split("\\").pop() };
+  let file_name = item.file_path.split("\\").pop();
+  let file_ext = file_name.slice(file_name.lastIndexOf(".") + 1)
+  return { ...item, file_name, file_ext};
 };
 
 // Open a folder and handle potential errors
@@ -60,7 +62,7 @@ export const open_folder = async (folderPath) => {
     if (folderPath !== "") {
       folderPath = pathBuff.join("\\") + "\\";
       let response = await invoke("open_folder", { folderPath });
-      response = await Promise.all(response.map(add_file_name));
+      response = await Promise.all(response.map(process_response));
 
       update_file_count(response.length);
 
@@ -108,7 +110,7 @@ export const search_system = async (search_term) => {
   const limit = 10000;
   const params = { path: search_term, limit };
   search_results = await invoke("search_system", { params });
-  search_results = await Promise.all(search_results.map(add_file_name));
+  search_results = await Promise.all(search_results.map(process_response));
   update_file_count(search_results.length);
   WindowTabs.update((items) => {
     items[activeTab] = {

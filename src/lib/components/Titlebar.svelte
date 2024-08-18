@@ -58,7 +58,7 @@
   };
 </script>
 
-<header class="hidden sm:flex flex-row justify-end h-8 w-full bg-secondarybackground">
+<header class="flex flex-row justify-end h-8 w-full bg-secondarybackground">
   <div
     id="window-mover"
     class="cursor-move flex grow min-w-16"
@@ -68,7 +68,7 @@
   ><span class="flex px-2 text-xl font-semibold">{title.slice(0,48)}</span></div>
   <div
     id="window-button-container"
-    class="flex flex-row h-8 text-sm text-center"
+    class="hidden sm:flex flex-row h-8 text-sm text-center"
   >
     <a
       class="flex relative items-center justify-center w-8 hover:bg-surfacebackground cursor-pointer"
