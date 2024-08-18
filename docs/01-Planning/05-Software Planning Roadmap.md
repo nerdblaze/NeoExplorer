@@ -30,9 +30,9 @@ This document outlines the roadmap for the development of the NeoExplorer projec
        - [x] Open in new window
        - [x] Open in new tab
        - [x] Show Properties
-   - [ ] Implement basic file operations
-     - [ ] Create a File/Folder
-     - [ ] Delete a File/Folder
+   - [x] Implement basic file operations
+     - [x] Create a File/Folder
+     - [x] Delete a File/Folder
    - [x] Implement Searching feature
      - [x] 0-second searching
    - [ ] Conduct initial testing and debugging

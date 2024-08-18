@@ -32,7 +32,7 @@ use tauri::Manager;
 // Internal Modules
 use crate::core::{
     explorer_engine::{
-        explorer_service::{open_file, open_folder},
+        explorer_service::{open_file, open_folder,delete_file,delete_files,create_file,create_folder},
         file_service::info_handler::get_file_info,
     },
     search_engine::{
@@ -87,7 +87,11 @@ async fn main() {
             open_folder,
             create_new_window,
             open_file,
-            get_file_info
+            get_file_info,
+            delete_file,
+            delete_files,
+            create_file,
+            create_folder
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

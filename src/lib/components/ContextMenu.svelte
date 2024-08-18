@@ -8,8 +8,6 @@
   });
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <div
   id="context-menu-container"
   class="{$ContextMenuList.visible ? 'block' : 'hidden'} absolute max-w-52 z-[9999] bg-primarybackground border-hinttext border rounded-lg shadow-lg text-sm"

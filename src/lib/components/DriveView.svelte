@@ -16,8 +16,6 @@
 
 </script>
 
-<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-<!-- svelte-ignore a11y-click-events-have-key-events -->
 <ul
   id="drive-list"
   class="flex flex-row p-2 flex-wrap"

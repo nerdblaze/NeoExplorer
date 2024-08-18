@@ -54,9 +54,6 @@
 </script>
 
 <!-- Window Tab -->
-<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-static-element-interactions -->
 <div
   id="user-area"
   class="flex flex-row grow"
@@ -74,10 +71,9 @@
         class="flex flex-row px-2 h-10 min-w-64 text-sm/6 overflow-hidden"
       >
         {#each $WindowTabs as tab, idx}
-          <a
+          <button
             class="flex flex-row p-1 mt-2 max-w-64 w-64 rounded-t-md text-left cursor-pointer {tab.isActive ? 'bg-primarybackground' : ''} justify-between"
-            href="/"
-            on:click={() => switch_tab(idx)}
+            on:click|preventDefault={() => switch_tab(idx)}
           >
             <span class="overflow-hidden text-nowrap">{$WindowTabs[idx].currentPath.slice(-1)[0] || "This PC"}</span>
             <span
@@ -87,17 +83,16 @@
             >
               <i class="icon icon-x text-2xs"></i>
             </span>
-          </a>
+          </button>
         {/each}
-        <a
-          class="p-2 rounded-t-md"
-          href="/"
+        <button
+          class="p-2 rounded-t-md hover:bg-primarybackground"
+          on:click|preventDefault={() => new_tab()}
         >
           <i
             class="icon icon-plus text-2xs"
-            on:click|preventDefault={() => new_tab()}
           ></i>
-        </a>
+        </button>
       </div>
       <Titlebar />
     </div>

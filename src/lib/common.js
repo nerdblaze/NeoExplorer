@@ -50,8 +50,8 @@ export const createContextMenu = async (event, callback, ...args) => {
 const process_response = async (item) => {
   await new Promise((resolve) => setTimeout(resolve, 100)); // Simulate async delay
   let file_name = item.file_path.split("\\").pop();
-  let file_ext = file_name.slice(file_name.lastIndexOf(".") + 1)
-  return { ...item, file_name, file_ext};
+  let file_ext = file_name.slice(file_name.lastIndexOf(".") + 1);
+  return { ...item, file_name, file_ext };
 };
 
 // Open a folder and handle potential errors
@@ -169,4 +169,47 @@ export const switch_tab = async (index) => {
 
 export const get_properties = async (filePath) => {
   return await invoke("get_file_info", { filePath });
+};
+
+// Reload the current folder
+export const reload_page = async () => {
+  const activeTab = get_active_tab();
+  const unsub = WindowTabs.subscribe(async (item) => {
+    if (item[activeTab].currentPath.length > 0) {
+      let path = item[activeTab].currentPath.join("\\");
+      await open_folder(path);
+    }
+  });
+  unsub();
+};
+
+export const delete_item = async (filePath) => {
+  try {
+    return await invoke("delete_file", { filePath });
+  } catch (error) {
+    notify(error, "Error");
+  }
+};
+
+export const delete_items = async (filePaths) => {
+  try {
+    return await invoke("delete_files", { filePaths });
+  } catch (error) {
+    notify(error, "Error");
+  }
+};
+
+export const new_file = async (filePath) => {
+  try {
+    return await invoke("create_file", { filePath });
+  } catch (error) {
+    notify(error, "Error");
+  }
+};
+export const new_folder = async (folderPath) => {
+  try {
+    return await invoke("create_folder", { folderPath });
+  } catch (error) {
+    notify(error, "Error");
+  }
 };

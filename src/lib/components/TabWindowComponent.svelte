@@ -3,7 +3,7 @@
   import { onDestroy, onMount } from "svelte";
   import DriveView from "./DriveView.svelte";
   import { get_active_tab, notify } from "$lib/utilities";
-  import { open_folder, search_system } from "$lib/common";
+  import { open_folder, search_system, reload_page } from "$lib/common";
   import { WindowTabs, StatusInfo } from "$lib/records";
   import ExplorerView from "$lib/components/ExplorerView.svelte";
 
@@ -39,7 +39,7 @@
   const handleKeyboard = async (event) => {
     if (event.ctrlKey) {
       if (event.key === "r") {
-        reloadPage();
+        reload_page();
         event.preventDefault();
       }
     } else if (event.key === "Enter") {
@@ -93,34 +93,16 @@
     if (path) open_folder(path);
   }
 
-  // Reload the current folder
-  async function reloadPage() {
-    const tabIndex = await get_active_tab();
-    if ($WindowTabs[tabIndex].currentPath.length > 0) {
-      let path = $WindowTabs[tabIndex].currentPath.join("\\");
-      await open_folder(path);
-    }
-  }
-
   // Handle breadcrumb link click
   async function handleBreadcrumbClick(index) {
     let pathbuff = [...$WindowTabs[tabIndex].currentPath.slice(0, index + 1)];
     await open_folder(pathbuff.join("\\"));
-  }
-  async function openSearchResult(item) {
-    if (item.file_attributes.directory) {
-      $WindowTabs[tabIndex].currentPath = [...item.file_path.split("\\")];
-      reloadPage();
-    }
   }
   const toggle_view = async () => {
     $WindowTabs[tabIndex].viewMode = ($WindowTabs[tabIndex].viewMode + 1) % 2;
   };
 </script>
 
-<!-- svelte-ignore a11y-click-events-have-key-events -->
-<!-- svelte-ignore a11y-no-static-element-interactions -->
-<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
 <div
   id="tab-quickbar-container"
   class="h-10 w-full flex items-center justify-between bg-primarybackground my-1 pb-1 mx-auto shadow-sm shadow-surfacebackground"
@@ -143,7 +125,7 @@
     </li>
     <li
       class="w-6 h-6 flex items-center justify-center text-primarytext cursor-pointer hover:text-accentprimary"
-      on:click={reloadPage}
+      on:click={reload_page}
     >
       <i class="icon icon-arrow-rotate-right text-xs"></i>
     </li>
@@ -219,9 +201,8 @@
 
 <div
   id="tab-window-container"
-  class="flex h-full"
+  class="flex flex-row h-full"
 >
-  <!-- svelte-ignore a11y-no-static-element-interactions -->
   <div
     id="tree-view-container"
     class="hidden md:flex flex-col border-r border-dividerline"
@@ -231,7 +212,7 @@
 
   <div
     id="explorer-view-container"
-    class="flex-1 p-4 overflow-y-auto overflow-x-hidden"
+    class="flex flex-col flex-1 p-2 overflow-y-auto overflow-x-hidden"
   >
     {#if $WindowTabs[tabIndex].currentView.length === 0}
       <DriveView />
