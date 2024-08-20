@@ -145,7 +145,7 @@
             <ul class="flex flex-col text-xs">
               <span class="flex w-full text-nowrap">{item.file_name.length > 30 ? item.file_name.slice(0, 30) + "..." : item.file_name}</span>
               {#if !item.file_attributes.directory}
-                <span class="flex">{item.file_ext} file</span>
+                <span class="flex">{item.file_ext.slice(0,5)} file</span>
                 <span class="flex">{formatBytes(item.file_size)}</span>
               {/if}
             </ul>
@@ -194,9 +194,9 @@
             <ul class="flex flex-row text-sm w-full h-10 justify-between">
               <span class="flex px-2 py-1 w-full overflow-hidden text-wrap text-left">{item.file_name}</span>
               <span class="flex px-2 py-1 w-1/5 overflow-hidden text-wrap items-center">{formatDates(item.file_modification_time)}</span>
-              <span class="flex px-2 w-2/12 overflow-hidden text-wrap items-center">
+              <span class="flex px-2 w-2/12 overflow-hidden text-nowrap items-center">
                 {#if !item.file_attributes.directory}
-                  {item.file_ext} file
+                  {item.file_ext.slice(0,5)} file
                 {:else}
                   Folder
                 {/if}
