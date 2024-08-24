@@ -14,7 +14,6 @@
 
 // External Crates
 use tauri::{
-    image::Image,
     menu::{MenuBuilder, MenuItemBuilder},
     tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
     Manager,
@@ -42,11 +41,11 @@ pub fn create_system_tray(app: &tauri::AppHandle) -> Result<(), tauri::Error> {
     let exit = MenuItemBuilder::with_id("exit", "Exit").build(app)?;
     let menu = MenuBuilder::new(app).items(&[&exit]).build()?;
     let _tray = TrayIconBuilder::new()
-        .icon(Image::from_path("icons/icon.png")?)
+        .icon(app.default_window_icon().unwrap().clone())
         .menu(&menu)
         .on_menu_event(move |app_handle, event| match event.id().as_ref() {
             "exit" => {
-                for webview_window in app_handle.webview_windows().values(){
+                for webview_window in app_handle.webview_windows().values() {
                     let _ = webview_window.close();
                 }
             }
@@ -60,8 +59,8 @@ pub fn create_system_tray(app: &tauri::AppHandle) -> Result<(), tauri::Error> {
             } = event
             {
                 let app_handle = tray.app_handle();
-                {   
-                    for webview_window in app_handle.webview_windows().values(){
+                {
+                    for webview_window in app_handle.webview_windows().values() {
                         let _ = webview_window.show();
                         let _ = webview_window.set_focus();
                     }
